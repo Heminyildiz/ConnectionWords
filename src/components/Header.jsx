@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = ({ errorCount, errorLimit, gameStatus }) => {
   return (
-    <header className="py-3 border-b border-gray-300 w-full">
+    <header className="py-3 w-full">
       <h1 className="text-2xl font-semibold text-center text-gray-800">
         ConnectionWords
       </h1>
@@ -11,6 +11,7 @@ const Header = ({ errorCount, errorLimit, gameStatus }) => {
 };
 
 export default Header;
+
 
 
 
