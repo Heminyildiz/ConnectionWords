@@ -4,7 +4,7 @@ const difficulties = ["Easy", "Medium", "Hard"];
 
 const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
   return (
-    <div className="flex space-x-4">
+    <div className="flex justify-center space-x-4">
       {difficulties.map((level) => (
         <button
           key={level}
@@ -23,6 +23,7 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
 };
 
 export default DifficultySelector;
+
 
 
 
