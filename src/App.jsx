@@ -44,7 +44,7 @@ const App = () => {
       .catch(err => console.error("JSON yüklenirken hata:", err));
   }, []);
 
-  // Kelime havuzu yüklendiğinde veya zorluk değiştiğinde yeni oyunu başlat
+  // Kelime havuzu yüklendikten veya zorluk değiştiğinde yeni oyunu başlat
   useEffect(() => {
     if (allWordPool) {
       startNewGame();
@@ -100,12 +100,11 @@ const App = () => {
     setTime(0);
   };
 
-  // Girişte tıklanmayı toggle et (seçili ise seçimi geri al)
+  // Tıklama toggle'ı: Eğer kutu zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
 
     if (selectedWordIds.includes(word.id)) {
-      // Zaten seçiliyse, seçimi geri al
       setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
       return;
     }
@@ -166,10 +165,10 @@ const App = () => {
         gameStatus={gameStatus}
       />
       <div className="p-4 flex flex-col items-center">
-        {/* Grid containeryu sabit genişlikte ve relative yapıyoruz */}
-        <div className="w-[31rem] relative">
-          {/* Zaman sayacı, gridin sağ üst kutusunun üzerine konumlandırıldı */}
-          <div className="absolute top-0 right-0 mt-[-1.5rem] mr-[-0.5rem] text-gray-700 text-sm font-bold">
+        {/* Grid container: genişlik 35rem */}
+        <div className="w-[35rem] relative">
+          {/* Zaman sayacı: container sağ üst köşesine hizalanıyor */}
+          <div className="absolute top-0 right-0 text-gray-700 text-sm font-bold">
             {formatTime(time)}
           </div>
           <div className="grid grid-cols-4 gap-4">
@@ -183,6 +182,10 @@ const App = () => {
             ))}
           </div>
         </div>
+        {/* Hata bilgisi */}
+        <div className="mt-4 text-gray-700 text-lg font-semibold">
+          Mistakes remaining: {errorLimit - errorCount}
+        </div>
         <div className="mt-6">
           <DifficultySelector
             currentDifficulty={difficulty}
@@ -195,6 +198,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
