@@ -3,14 +3,14 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
-// Kelime havuzu: Her anahtar bir grup ve değerleri o gruba ait kelimeler
+// Genişletilmiş ve daha zor kelime havuzu (öneri: bu havuzu dış bir API'den veya JSON dosyasından dinamik olarak da çekebilirsin)
 const WORD_POOL = {
-  1: ["apple", "banana", "cherry", "date", "fig", "grape", "melon"],
-  2: ["car", "bus", "train", "plane", "bike", "ship", "scooter"],
-  3: ["red", "blue", "green", "yellow", "purple", "orange", "pink"],
-  4: ["cat", "dog", "mouse", "rabbit", "hamster", "parrot", "turtle"],
-  5: ["spring", "summer", "autumn", "winter", "monsoon", "rainy", "dry"],
-  6: ["piano", "guitar", "violin", "drum", "flute", "saxophone", "trumpet"]
+  1: ["mürekkep", "defter", "hikaye", "şiir", "roman", "öykü"],
+  2: ["imparatorluk", "devrim", "medeniyet", "krallık", "savaş", "antik"],
+  3: ["kuantum", "biyoloji", "astronomi", "fizik", "kimya", "nükleer"],
+  4: ["yapay", "zeka", "robotik", "algoritma", "blokzinciri", "siber"],
+  5: ["dağ", "nehir", "ova", "göl", "kıyı", "adalar"],
+  6: ["senfoni", "opera", "keman", "piyano", "ritim", "melodi"],
 };
 
 // Zorluk ayarları: hata limiti
@@ -37,13 +37,14 @@ function generateGameWords() {
   let words = [];
   let idCounter = 1;
   selectedGroupKeys.forEach((groupKey) => {
-    // Seçilen gruptan rastgele 4 kelime seç
-    const wordsForGroup = shuffleArray([...WORD_POOL[groupKey]]).slice(0, 4);
+    // Seçilen gruptan rastgele 4 kelime seç (eğer yeterli kelime yoksa, havuzun tamamını kullan)
+    const groupWords = [...WORD_POOL[groupKey]];
+    const wordsForGroup = shuffleArray(groupWords).slice(0, 4);
     wordsForGroup.forEach((word) => {
       words.push({
         id: idCounter++,
         text: word,
-        group: groupKey,  // grubu sakla
+        group: groupKey,  // Kelimenin ait olduğu grubu sakla
         solved: false,
       });
     });
@@ -94,11 +95,9 @@ const App = () => {
         );
         setWords(updatedWords);
         setSelectedWordIds([]);
-        // Başarı animasyonu/sesi eklenebilir
       } else {
         // Yanlış seçim: hata sayısını artır
         setErrorCount(prev => prev + 1);
-        // Hata animasyonu gösterilebilir
         setTimeout(() => {
           setSelectedWordIds([]);
         }, 500);
@@ -115,13 +114,22 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit]);
 
+  useEffect(() => {
+    // Eğer oyun kazanıldıysa, otomatik olarak yeni bir oyun başlat (2 saniye sonra)
+    if (gameStatus === "won") {
+      const timer = setTimeout(() => {
+        startNewGame();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [gameStatus]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-50 font-sans animate-fadeIn">
       <Header 
         errorCount={errorCount} 
         errorLimit={errorLimit} 
         gameStatus={gameStatus} 
-        onNewGame={startNewGame}
         difficulty={difficulty}
       />
       <div className="p-4 flex flex-col items-center">
@@ -129,7 +137,7 @@ const App = () => {
           <div className="mb-4 text-red-600 text-2xl font-bold">Oyun Bitti! Hata limitini aştınız.</div>
         )}
         {gameStatus === "won" && (
-          <div className="mb-4 text-green-600 text-2xl font-bold">Tebrikler! Oyunu kazandınız!</div>
+          <div className="mb-4 text-green-600 text-2xl font-bold">Tebrikler! Yeni kelimeler hazırlanıyor...</div>
         )}
         <div className="grid grid-cols-4 gap-4">
           {words.map(word => (
@@ -153,4 +161,5 @@ const App = () => {
 };
 
 export default App;
+
 
