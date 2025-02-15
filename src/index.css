@@ -2,5 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* İsteğe bağlı global stil tanımlamaları */
+/* Tüm projede Open Sans kullanılması */
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
 
