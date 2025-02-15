@@ -161,15 +161,15 @@ const App = () => {
     <div className="min-h-screen bg-[#F7F7F7] font-sans animate-fadeIn">
       <Header errorCount={errorCount} errorLimit={errorLimit} gameStatus={gameStatus} />
       <div className="p-4 flex flex-col items-center">
-        {/* Header altındaki çizgi, responsive genişlik */}
+        {/* Header altındaki çizgi */}
         <div className="w-full max-w-[35rem] h-px bg-gray-300 mb-2"></div>
         {/* Zaman sayacı, grid container'ın üstünde sağa hizalı */}
         <div className="w-full max-w-[35rem] flex justify-end mb-2">
           <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
         </div>
-        {/* Kelime grid container: responsive genişlik, mobilde full genişlik */}
+        {/* Kelime grid container: mobilde de 4 sütun */}
         <div className="w-full max-w-[35rem]">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-4 gap-6">
             {words.map(word => (
               <WordButton
                 key={word.id}
@@ -201,6 +201,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
