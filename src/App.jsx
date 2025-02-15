@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import WordButton from './components/WordButton';
-import DifficultySelector from './components/DifficultySelector';
+import Header from './Header';
+import WordButton from './WordButton';
+import DifficultySelector from './DifficultySelector';
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -31,6 +31,7 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
+  const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
@@ -42,10 +43,10 @@ const App = () => {
       .catch(err => console.error("Error loading JSON:", err));
   }, []);
 
-  // Kelime havuzu yüklendiğinde veya zorluk değiştiğinde yeni oyunu başlat
+  // Kelime havuzu yüklendiğinde veya mod/difficulty değiştiğinde yeni oyunu başlat
   useEffect(() => {
     if (allWordPool) startNewGame();
-  }, [allWordPool, difficulty]);
+  }, [allWordPool, difficulty, mode]);
 
   // Oyun oynanırken zaman sayacı (mm:ss formatında)
   useEffect(() => {
@@ -56,12 +57,18 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
   function generateGameWords() {
+    // Üzerinde zorluk seçici olmayan Daily modunda, difficulty değerini göz ardı edip belirli bir havuz kullanabilirsiniz.
+    // Burada basitlik açısından, her iki modda da aynı generateGameWords fonksiyonunu kullanıyoruz.
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
     const selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
@@ -90,7 +97,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Tıklama toggle'ı: Eğer zaten seçiliyse geri al; değilse ekle.
+  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -125,11 +132,11 @@ const App = () => {
   }, [errorCount, words, errorLimit]);
 
   useEffect(() => {
-    if (gameStatus === "won") {
+    if (gameStatus === "won" && mode === "Endless") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
-  }, [gameStatus]);
+  }, [gameStatus, mode]);
 
   if (!allWordPool) {
     return (
@@ -141,7 +148,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F7F7] font-sans animate-fadeIn">
-      <Header errorCount={errorCount} errorLimit={errorLimit} gameStatus={gameStatus} />
+      <Header mode={mode} setMode={setMode} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           {/* Üst çizgi */}
@@ -150,7 +157,7 @@ const App = () => {
           <div className="flex justify-end mb-2">
             <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
           </div>
-          {/* Kelime grid: 4 sütun, eşit boşluk */}
+          {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -161,21 +168,40 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Hata bilgisi / New Game butonu */}
+          {/* Hata bilgisi veya New Game butonu / Daily modunda Well Done pop-up */}
           <div className="mt-4 text-center">
-            {gameStatus === "lost" ? (
-              <button onClick={startNewGame} className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
-                New Game
-              </button>
+            {mode === "Daily" ? (
+              gameStatus === "won" ? (
+                <>
+                  <div className="text-green-600 text-lg font-semibold">Well Done!</div>
+                  <button
+                    onClick={() => {
+                      setMode("Endless");
+                      startNewGame();
+                    }}
+                    className="mt-2 py-2 px-4 rounded-md bg-blue-500 text-white font-bold"
+                  >
+                    New Game
+                  </button>
+                </>
+              ) : (
+                <div className="text-gray-700 text-lg font-semibold">
+                  Mistakes remaining: {errorLimit - errorCount}
+                </div>
+              )
             ) : (
-              <div className="text-gray-700 text-lg font-semibold">
-                Mistakes remaining: {errorLimit - errorCount}
-              </div>
+              <>
+                <div className="text-gray-700 text-lg font-semibold">
+                  Mistakes remaining: {errorLimit - errorCount}
+                </div>
+                <div className="mt-6">
+                  <DifficultySelector
+                    currentDifficulty={difficulty}
+                    onDifficultyChange={setDifficulty}
+                  />
+                </div>
+              </>
             )}
-          </div>
-          {/* Difficulty Selector */}
-          <div className="mt-6">
-            <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
           </div>
         </div>
       </div>
@@ -184,6 +210,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
