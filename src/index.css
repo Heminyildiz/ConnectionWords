@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tüm projede Open Sans kullanımı */
+/* Tüm projede Lexend kullanımı */
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Lexend', sans-serif;
 }
+
 
 
 
