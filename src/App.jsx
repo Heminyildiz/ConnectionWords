@@ -173,7 +173,7 @@ const App = () => {
         </div>
         {/* Kelime grid container */}
         <div className="w-[35rem]">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 gap-6">
             {words.map(word => (
               <WordButton
                 key={word.id}
