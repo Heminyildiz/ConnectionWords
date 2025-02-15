@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<button className="mt-4 p-2 bg-blue-500 text-white rounded" onClick={checkGroup} disabled={selectedWords.length !== 4}>
 import "tailwindcss/tailwind.css";
 
 const initialWords = [
