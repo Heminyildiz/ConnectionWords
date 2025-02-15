@@ -34,7 +34,7 @@ const App = () => {
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // JSON dosyasını yükle
+  // JSON verisini yükle
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
@@ -44,14 +44,14 @@ const App = () => {
       .catch(err => console.error("JSON yüklenirken hata:", err));
   }, []);
 
-  // Kelime havuzu yüklendikten veya zorluk değiştiğinde yeni oyunu başlat
+  // Kelime havuzu yüklendiğinde veya zorluk değiştiğinde yeni oyunu başlat
   useEffect(() => {
     if (allWordPool) {
       startNewGame();
     }
   }, [allWordPool, difficulty]);
 
-  // Oyun oynanırken zaman sayacı
+  // Oyun oynanırken zaman sayacı (mm:ss formatında)
   useEffect(() => {
     if (gameStatus === "playing") {
       const interval = setInterval(() => {
@@ -60,6 +60,16 @@ const App = () => {
       return () => clearInterval(interval);
     }
   }, [gameStatus]);
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
+    return `Time: ${minutes}:${seconds}`;
+  };
 
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
@@ -90,9 +100,15 @@ const App = () => {
     setTime(0);
   };
 
+  // Girişte tıklanmayı toggle et (seçili ise seçimi geri al)
   const handleWordClick = (word) => {
-    if (gameStatus !== "playing") return;
-    if (word.solved || selectedWordIds.includes(word.id)) return;
+    if (gameStatus !== "playing" || word.solved) return;
+
+    if (selectedWordIds.includes(word.id)) {
+      // Zaten seçiliyse, seçimi geri al
+      setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
+      return;
+    }
 
     const newSelected = [...selectedWordIds, word.id];
     setSelectedWordIds(newSelected);
@@ -149,30 +165,23 @@ const App = () => {
         errorLimit={errorLimit}
         gameStatus={gameStatus}
       />
-      <div className="p-4 flex flex-col items-center relative">
-        {/* Zaman sayacı: Kelime kutusu grubunun sağ üst köşesinde */}
-        <div className="absolute top-0 right-0 mr-4 mt-2 text-gray-700 text-lg font-bold">
-          {time}s
-        </div>
-        {gameStatus === "lost" && (
-          <div className="mb-4 text-red-600 text-2xl font-bold">
-            Oyun Bitti! Hata limitini aştınız.
+      <div className="p-4 flex flex-col items-center">
+        {/* Grid containeryu sabit genişlikte ve relative yapıyoruz */}
+        <div className="w-[31rem] relative">
+          {/* Zaman sayacı, gridin sağ üst kutusunun üzerine konumlandırıldı */}
+          <div className="absolute top-0 right-0 mt-[-1.5rem] mr-[-0.5rem] text-gray-700 text-sm font-bold">
+            {formatTime(time)}
           </div>
-        )}
-        {gameStatus === "won" && (
-          <div className="mb-4 text-green-600 text-2xl font-bold">
-            Tebrikler! Yeni kelimeler hazırlanıyor...
+          <div className="grid grid-cols-4 gap-4">
+            {words.map(word => (
+              <WordButton
+                key={word.id}
+                word={word}
+                onClick={() => handleWordClick(word)}
+                isSelected={selectedWordIds.includes(word.id)}
+              />
+            ))}
           </div>
-        )}
-        <div className="grid grid-cols-4 gap-4">
-          {words.map(word => (
-            <WordButton
-              key={word.id}
-              word={word}
-              onClick={() => handleWordClick(word)}
-              isSelected={selectedWordIds.includes(word.id)}
-            />
-          ))}
         </div>
         <div className="mt-6">
           <DifficultySelector
@@ -186,6 +195,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
