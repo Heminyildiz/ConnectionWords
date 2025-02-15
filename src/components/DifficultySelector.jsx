@@ -18,3 +18,4 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
 };
 
 export default DifficultySelector;
+
