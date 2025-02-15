@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
+    "./public/index.html",
     "./src/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
@@ -10,17 +11,14 @@ module.exports = {
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: 0, transform: 'translateY(20px)' },
-          '100%': { opacity: 1, transform: 'translateY(0)' },
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
         },
       },
-      fontFamily: {
-        // Google Fonts'tan eklediğin modern bir font örneği: Inter
-        sans: ['Inter', 'ui-sans-serif', 'system-ui']
-      }
     },
   },
   plugins: [],
 }
+
 
 
