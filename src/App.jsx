@@ -32,6 +32,7 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
   const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
+  const [theme, setTheme] = useState("light"); // "light" or "dark"
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
@@ -45,9 +46,7 @@ const App = () => {
 
   // Kelime havuzu yüklendiğinde veya mod/difficulty değiştiğinde yeni oyunu başlat
   useEffect(() => {
-    if (allWordPool) {
-      startNewGame();
-    }
+    if (allWordPool) startNewGame();
   }, [allWordPool, difficulty, mode]);
 
   // Oyun oynanırken zaman sayacı (mm:ss formatında)
@@ -59,12 +58,8 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -138,24 +133,21 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  if (!allWordPool) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading word pool...</p>
-      </div>
-    );
-  }
+  // Top-level container sınıfı tema durumuna göre ayarlanıyor
+  const containerClass = theme === "dark" 
+    ? "bg-gray-900 text-white" 
+    : "bg-[#F7F7F7] text-gray-800";
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] font-sans animate-fadeIn">
-      <Header mode={mode} setMode={setMode} />
+    <div className={`${containerClass} min-h-screen font-sans animate-fadeIn`}>
+      <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
           {/* Zaman sayacı */}
           <div className="flex justify-end mb-2">
-            <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
+            <span className="text-sm font-bold">{formatTime(time)}</span>
           </div>
           {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
@@ -168,7 +160,7 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Hata bilgisi / New Game butonu */}
+          {/* Hata bilgisi / New Game butonu / Daily mod pop-up */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -185,13 +177,13 @@ const App = () => {
                   </button>
                 </>
               ) : (
-                <div className="text-gray-700 text-lg font-semibold">
+                <div className="text-lg font-semibold">
                   Mistakes remaining: {errorLimit - errorCount}
                 </div>
               )
             ) : (
               <>
-                <div className="text-gray-700 text-lg font-semibold">
+                <div className="text-lg font-semibold">
                   Mistakes remaining: {errorLimit - errorCount}
                 </div>
                 <div className="mt-6">
@@ -207,22 +199,3 @@ const App = () => {
 };
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
