@@ -27,7 +27,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
         </div>
         {/* Orta: ConnectionWords metni */}
         <div>
-          <h1 className={`text-xl font-semibold ${textColorClass} text-center`}>ConnectionWords</h1>
+          <h1 className={`text-xl font-semibold ${textColorClass} text-center`}></h1>
         </div>
         {/* Sağ taraf: Tema toggling */}
         <div className="relative">
