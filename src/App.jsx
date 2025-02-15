@@ -100,7 +100,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Tıklama toggle'ı: zaten seçiliyse geri al, değilse ekle.
+  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
 
@@ -165,15 +165,12 @@ const App = () => {
         gameStatus={gameStatus}
       />
       <div className="p-4 flex flex-col items-center">
-        {/* İnce çizgi: grid container genişliği kadar (35rem) */}
-        <div className="w-[35rem] h-px bg-gray-300 mb-2"></div>
-        {/* Time sayacı: grid container'ın üstünde, sağa hizalı */}
-        <div className="w-[35rem] flex justify-end mb-2">
+        <div className="w-[30rem] h-px bg-gray-300 mb-2"></div>
+        <div className="w-[30rem] flex justify-end mb-2">
           <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
         </div>
-        {/* Kelime grid container */}
-        <div className="w-[35rem]">
-          <div className="grid grid-cols-4 gap-6">
+        <div className="w-[30rem]">
+          <div className="grid grid-cols-4 gap-4">
             {words.map(word => (
               <WordButton
                 key={word.id}
@@ -184,7 +181,6 @@ const App = () => {
             ))}
           </div>
         </div>
-        {/* Hata bilgisi veya New Game butonu */}
         {gameStatus === "lost" ? (
           <div className="mt-4">
             <button onClick={startNewGame} className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
@@ -208,6 +204,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
