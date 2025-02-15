@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-<button className="mt-4 p-2 bg-blue-500 text-white rounded" onClick={checkGroup} disabled={selectedWords.length !== 4}>
-import "tailwindcss/tailwind.css";
 
-const initialWords = [
+const words = [
   "Apple", "Banana", "Cherry", "Grape",
   "Dog", "Cat", "Horse", "Elephant",
   "Red", "Blue", "Green", "Yellow",
@@ -23,10 +21,12 @@ export default function ConnectionWords() {
 
   const handleSelect = (word) => {
     if (selectedWords.includes(word) || lockedGroups.flat().includes(word)) return;
-    setSelectedWords((prev) => [...prev, word]);
+    setSelectedWords([...selectedWords, word]);
   };
 
   const checkGroup = () => {
+    if (selectedWords.length !== 4) return;
+
     const isCorrect = correctGroups.some(group =>
       group.every(word => selectedWords.includes(word))
     );
@@ -40,23 +40,28 @@ export default function ConnectionWords() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6">
-      <h1 className="text-2xl font-bold mb-4">ConnectionWords</h1>
-      <div className="grid grid-cols-4 gap-2">
-        {initialWords.map((word) => (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h1>ConnectionWords</h1>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+        {words.map((word) => (
           <button
             key={word}
             onClick={() => handleSelect(word)}
-            className={`p-3 border rounded-lg ${selectedWords.includes(word) ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            style={{
+              padding: "10px", 
+              border: "1px solid black", 
+              backgroundColor: selectedWords.includes(word) ? "lightblue" : "white"
+            }}
           >
             {word}
           </button>
         ))}
       </div>
-      <Button className="mt-4" onClick={checkGroup} disabled={selectedWords.length !== 4}>
+      <button onClick={checkGroup} disabled={selectedWords.length !== 4} style={{ marginTop: "10px", padding: "10px", backgroundColor: "blue", color: "white" }}>
         Kontrol Et
-      </Button>
-      <p className="mt-4">Hata Sayısı: {mistakes}/4</p>
+      </button>
+      <p>Hata Sayısı: {mistakes}/4</p>
     </div>
   );
 }
+
