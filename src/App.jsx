@@ -17,8 +17,15 @@ const DIFFICULTY_SETTINGS = {
   Zor: 2,
 };
 
+// Kullanıcı arayüzündeki zorluk ile JSON'daki anahtarları eşleştiriyoruz.
+const difficultyMap = {
+  Kolay: "easy",
+  Orta: "medium",
+  Zor: "hard"
+};
+
 const App = () => {
-  const [wordPool, setWordPool] = useState([]);
+  const [allWordPool, setAllWordPool] = useState(null);
   const [words, setWords] = useState([]);
   const [selectedWordIds, setSelectedWordIds] = useState([]);
   const [errorCount, setErrorCount] = useState(0);
@@ -27,31 +34,32 @@ const App = () => {
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // JSON dosyasını yükle
+  // Tüm JSON verisini yükle (easy, medium, hard anahtarlarını içeren)
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
       .then(data => {
-        setWordPool(data.wordGroups);
+        setAllWordPool(data);
       })
       .catch(err => console.error("JSON yüklenirken hata:", err));
   }, []);
 
   // Kelime havuzu yüklendikten veya zorluk değiştiğinde yeni oyunu başlat
   useEffect(() => {
-    if (wordPool.length) {
+    if (allWordPool) {
       startNewGame();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordPool, difficulty]);
+  }, [allWordPool, difficulty]);
 
   function generateGameWords() {
-    const groupKeys = wordPool.map(group => group.groupId);
+    // Seçilen zorluk seviyesine uygun havuzu alıyoruz
+    const pool = allWordPool[difficultyMap[difficulty]];
+    const groupKeys = pool.map(group => group.groupId);
     const selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
     let generatedWords = [];
     let idCounter = 1;
     selectedGroupKeys.forEach((groupId) => {
-      const group = wordPool.find(g => g.groupId === groupId);
+      const group = pool.find(g => g.groupId === groupId);
       const wordsForGroup = shuffleArray([...group.words]).slice(0, 4);
       wordsForGroup.forEach((word) => {
         generatedWords.push({
@@ -116,7 +124,7 @@ const App = () => {
     }
   }, [gameStatus]);
 
-  if (!wordPool.length) {
+  if (!allWordPool) {
     return (
       <div className="min-h-screen flex items-center justify-center font-sans">
         <p>Kelime havuzu yükleniyor...</p>
@@ -165,6 +173,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
