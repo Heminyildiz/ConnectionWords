@@ -1,6 +1,6 @@
 import React from 'react';
 
-const difficulties = ["Kolay", "Orta", "Zor"];
+const difficulties = ["Easy", "Medium", "Hard"];
 
 const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
   return (
@@ -12,7 +12,7 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
           className={`py-2 px-4 rounded-md border ${
             currentDifficulty === level
               ? "bg-blue-500 text-white"
-              : "bg-white text-gray-800"
+              : "bg-[#c8ced6] text-gray-800"
           } transition-all duration-200 ease-in-out`}
         >
           {level}
@@ -23,5 +23,6 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
 };
 
 export default DifficultySelector;
+
 
 
