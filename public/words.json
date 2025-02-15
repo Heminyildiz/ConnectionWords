@@ -1,83 +1,83 @@
 {
-  "word_groups": [
+  "wordGroups": [
     {
-      "category": "Colors",
+      "groupId": "1",
       "words": ["Crimson", "Azure", "Emerald", "Ochre"]
     },
     {
-      "category": "Planets",
+      "groupId": "2",
       "words": ["Proxima Centauri b", "Kepler-442b", "Gliese 581g", "HD 209458 b"]
     },
     {
-      "category": "Fruits",
+      "groupId": "3",
       "words": ["Pomegranate", "Persimmon", "Durian", "Rambutan"]
     },
     {
-      "category": "Programming Languages",
+      "groupId": "3",
       "words": ["Haskell", "Rust", "Elixir", "Clojure"]
     },
     {
-      "category": "Days of the Week",
+      "groupId": "4",
       "words": ["Lunes", "Mardi", "Mittwoch", "Jueves"]
     },
     {
-      "category": "Chess Pieces",
+      "groupId": "5",
       "words": ["En Passant", "Castling", "Fianchetto", "Zugzwang"]
     },
     {
-      "category": "Cardinal Directions",
+      "groupId": "6",
       "words": ["Northeast", "Southwest", "Northwest", "Southeast"]
     },
     {
-      "category": "Ocean Creatures",
+      "groupId": "7",
       "words": ["Nudibranch", "Anglerfish", "Goblin Shark", "Vampire Squid"]
     },
     {
-      "category": "Musical Instruments",
+      "groupId": "8",
       "words": ["Theremin", "Didgeridoo", "Ocarina", "Balalaika"]
     },
     {
-      "category": "Sports",
+      "groupId": "9",
       "words": ["Sepak Takraw", "Curling", "Lacrosse", "Kabbadi"]
     },
     {
-      "category": "Modes of Transport",
+      "groupId": "10",
       "words": ["Funicular", "Hovercraft", "Dirigible", "Autogyro"]
     },
     {
-      "category": "Common First Names",
+      "groupId": "11",
       "words": ["Archibald", "Theophilus", "Persephone", "Isidore"]
     },
     {
-      "category": "Flowers",
+      "groupId": "12",
       "words": ["Amaryllis", "Chrysanthemum", "Bougainvillea", "Wisteria"]
     },
     {
-      "category": "Mathematical Terms",
+      "groupId": "13",
       "words": ["Eigenvalue", "Asymptote", "Tesseract", "Logarithm"]
     },
     {
-      "category": "Famous Scientists",
+      "groupId": "14",
       "words": ["Bohr", "Curie", "Laplace", "Fibonacci"]
     },
     {
-      "category": "Superheroes",
+      "groupId": "15",
       "words": ["Rorschach", "Spawn", "Hellboy", "Dr. Manhattan"]
     },
     {
-      "category": "Capital Cities",
+      "groupId": "16",
       "words": ["Ouagadougou", "Ljubljana", "Thimphu", "Ulaanbaatar"]
     },
     {
-      "category": "Shapes",
+      "groupId": "17",
       "words": ["Dodecahedron", "Torus", "Hyperboloid", "Trapezoid"]
     },
     {
-      "category": "Countries in Europe",
+      "groupId": "18",
       "words": ["Andorra", "San Marino", "Liechtenstein", "Moldova"]
     },
     {
-      "category": "Fast Food Items",
+      "groupId": "19",
       "words": ["Poutine", "Arepas", "Banh Mi", "Chimichanga"]
     }
   ]
