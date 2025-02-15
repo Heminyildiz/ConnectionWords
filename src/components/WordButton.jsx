@@ -1,8 +1,8 @@
 import React from 'react';
 
 const WordButton = ({ word, onClick, isSelected }) => {
-  // Sabit boyut: w-36 (9rem), h-20 (5rem)
-  const baseStyle = "w-36 h-20 flex items-center justify-center rounded-lg transition-all duration-300 ease-in-out cursor-pointer text-lg font-bold uppercase";
+  // Küçük boyutlu kutu: w-28 (7rem), h-16 (4rem)
+  const baseStyle = "w-28 h-16 flex items-center justify-center rounded-lg transition-all duration-300 ease-in-out cursor-pointer text-base font-bold uppercase";
   // Normalde arka plan #E6E5E4; seçili ise #C8CED6
   const boxStyle = isSelected ? "bg-[#C8CED6]" : "bg-[#E6E5E4]";
   
@@ -14,6 +14,7 @@ const WordButton = ({ word, onClick, isSelected }) => {
 };
 
 export default WordButton;
+
 
 
 
