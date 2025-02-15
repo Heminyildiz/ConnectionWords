@@ -38,36 +38,26 @@ const App = () => {
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
-      .then(data => {
-        setAllWordPool(data);
-      })
+      .then(data => setAllWordPool(data))
       .catch(err => console.error("Error loading JSON:", err));
   }, []);
 
   // Kelime havuzu yüklendiğinde veya zorluk değiştiğinde yeni oyunu başlat
   useEffect(() => {
-    if (allWordPool) {
-      startNewGame();
-    }
+    if (allWordPool) startNewGame();
   }, [allWordPool, difficulty]);
 
   // Oyun oynanırken zaman sayacı (mm:ss formatında)
   useEffect(() => {
     if (gameStatus === "playing") {
-      const interval = setInterval(() => {
-        setTime(prev => prev + 1);
-      }, 1000);
+      const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -100,7 +90,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Tıklama toggle'ı: Eğer zaten seçiliyse seçimi geri al; değilse ekle.
+  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
 
@@ -125,9 +115,7 @@ const App = () => {
         setSelectedWordIds([]);
       } else {
         setErrorCount(prev => prev + 1);
-        setTimeout(() => {
-          setSelectedWordIds([]);
-        }, 500);
+        setTimeout(() => setSelectedWordIds([]), 500);
       }
     }
   };
@@ -142,9 +130,7 @@ const App = () => {
 
   useEffect(() => {
     if (gameStatus === "won") {
-      const timer = setTimeout(() => {
-        startNewGame();
-      }, 2000);
+      const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
   }, [gameStatus]);
@@ -162,14 +148,14 @@ const App = () => {
       <Header errorCount={errorCount} errorLimit={errorLimit} gameStatus={gameStatus} />
       <div className="p-4 flex flex-col items-center">
         {/* Header altındaki çizgi */}
-        <div className="w-full max-w-[35rem] h-px bg-gray-300 mb-2"></div>
-        {/* Zaman sayacı, grid container'ın üstünde sağa hizalı */}
-        <div className="w-full max-w-[35rem] flex justify-end mb-2">
+        <div className="w-full px-4 max-w-[35rem] h-px bg-gray-300 mb-2"></div>
+        {/* Zaman sayacı, container'ın üstünde sağa hizalı */}
+        <div className="w-full px-4 max-w-[35rem] flex justify-end mb-2">
           <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
         </div>
-        {/* Kelime grid container: mobilde de 4 sütun */}
-        <div className="w-full max-w-[35rem]">
-          <div className="grid grid-cols-4 gap-6">
+        {/* Kelime grid container */}
+        <div className="w-full px-4 max-w-[35rem]">
+          <div className="grid grid-cols-4 gap-4">
             {words.map(word => (
               <WordButton
                 key={word.id}
@@ -201,6 +187,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
