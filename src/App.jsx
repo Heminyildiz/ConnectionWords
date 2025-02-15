@@ -92,7 +92,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
+  // Kelime butonuna tıklama toggle'ı
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -133,7 +133,7 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  // Top-level container sınıfı tema durumuna göre ayarlanıyor
+  // Tema durumuna göre container sınıfı
   const containerClass = theme === "dark" 
     ? "bg-gray-900 text-white" 
     : "bg-[#F7F7F7] text-gray-800";
@@ -143,13 +143,13 @@ const App = () => {
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
-          {/* Üst çizgi */}
+          {/* Üst çizgi (tek çizgi) */}
           <div className="h-px bg-gray-300 mb-2"></div>
           {/* Zaman sayacı */}
           <div className="flex justify-end mb-2">
             <span className="text-sm font-bold">{formatTime(time)}</span>
           </div>
-          {/* Kelime grid */}
+          {/* Kelime grid: her zaman 4 sütun */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -157,6 +157,7 @@ const App = () => {
                 word={word}
                 onClick={() => handleWordClick(word)}
                 isSelected={selectedWordIds.includes(word.id)}
+                theme={theme}
               />
             ))}
           </div>
@@ -199,3 +200,4 @@ const App = () => {
 };
 
 export default App;
+
