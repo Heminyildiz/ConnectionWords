@@ -1,28 +1,85 @@
 {
-  "wordGroups": [
+  "word_groups": [
     {
-      "groupId": "1",
-      "words": ["mürekkep", "defter", "hikaye", "şiir", "roman", "öykü"]
+      "category": "Colors",
+      "words": ["Crimson", "Azure", "Emerald", "Ochre"]
     },
     {
-      "groupId": "2",
-      "words": ["imparatorluk", "devrim", "medeniyet", "krallık", "savaş", "antik"]
+      "category": "Planets",
+      "words": ["Proxima Centauri b", "Kepler-442b", "Gliese 581g", "HD 209458 b"]
     },
     {
-      "groupId": "3",
-      "words": ["kuantum", "biyoloji", "astronomi", "fizik", "kimya", "nükleer"]
+      "category": "Fruits",
+      "words": ["Pomegranate", "Persimmon", "Durian", "Rambutan"]
     },
     {
-      "groupId": "4",
-      "words": ["yapay", "zeka", "robotik", "algoritma", "blokzinciri", "siber"]
+      "category": "Programming Languages",
+      "words": ["Haskell", "Rust", "Elixir", "Clojure"]
     },
     {
-      "groupId": "5",
-      "words": ["dağ", "nehir", "ova", "göl", "kıyı", "adalar"]
+      "category": "Days of the Week",
+      "words": ["Lunes", "Mardi", "Mittwoch", "Jueves"]
     },
     {
-      "groupId": "6",
-      "words": ["senfoni", "opera", "keman", "piyano", "ritim", "melodi"]
+      "category": "Chess Pieces",
+      "words": ["En Passant", "Castling", "Fianchetto", "Zugzwang"]
+    },
+    {
+      "category": "Cardinal Directions",
+      "words": ["Northeast", "Southwest", "Northwest", "Southeast"]
+    },
+    {
+      "category": "Ocean Creatures",
+      "words": ["Nudibranch", "Anglerfish", "Goblin Shark", "Vampire Squid"]
+    },
+    {
+      "category": "Musical Instruments",
+      "words": ["Theremin", "Didgeridoo", "Ocarina", "Balalaika"]
+    },
+    {
+      "category": "Sports",
+      "words": ["Sepak Takraw", "Curling", "Lacrosse", "Kabbadi"]
+    },
+    {
+      "category": "Modes of Transport",
+      "words": ["Funicular", "Hovercraft", "Dirigible", "Autogyro"]
+    },
+    {
+      "category": "Common First Names",
+      "words": ["Archibald", "Theophilus", "Persephone", "Isidore"]
+    },
+    {
+      "category": "Flowers",
+      "words": ["Amaryllis", "Chrysanthemum", "Bougainvillea", "Wisteria"]
+    },
+    {
+      "category": "Mathematical Terms",
+      "words": ["Eigenvalue", "Asymptote", "Tesseract", "Logarithm"]
+    },
+    {
+      "category": "Famous Scientists",
+      "words": ["Bohr", "Curie", "Laplace", "Fibonacci"]
+    },
+    {
+      "category": "Superheroes",
+      "words": ["Rorschach", "Spawn", "Hellboy", "Dr. Manhattan"]
+    },
+    {
+      "category": "Capital Cities",
+      "words": ["Ouagadougou", "Ljubljana", "Thimphu", "Ulaanbaatar"]
+    },
+    {
+      "category": "Shapes",
+      "words": ["Dodecahedron", "Torus", "Hyperboloid", "Trapezoid"]
+    },
+    {
+      "category": "Countries in Europe",
+      "words": ["Andorra", "San Marino", "Liechtenstein", "Moldova"]
+    },
+    {
+      "category": "Fast Food Items",
+      "words": ["Poutine", "Arepas", "Banh Mi", "Chimichanga"]
     }
   ]
 }
+
