@@ -17,7 +17,6 @@ const DIFFICULTY_SETTINGS = {
   Zor: 2,
 };
 
-// Kullanıcı arayüzündeki zorluk ile JSON'daki anahtarları eşleştiriyoruz.
 const difficultyMap = {
   Kolay: "easy",
   Orta: "medium",
@@ -52,7 +51,6 @@ const App = () => {
   }, [allWordPool, difficulty]);
 
   function generateGameWords() {
-    // Seçilen zorluk seviyesine uygun havuzu alıyoruz
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
     const selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
@@ -126,14 +124,14 @@ const App = () => {
 
   if (!allWordPool) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-sans">
+      <div className="min-h-screen flex items-center justify-center">
         <p>Kelime havuzu yükleniyor...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-50 font-sans animate-fadeIn">
+    <div className="min-h-screen bg-[#F7F7F7] font-sans animate-fadeIn">
       <Header
         errorCount={errorCount}
         errorLimit={errorLimit}
@@ -151,7 +149,7 @@ const App = () => {
             Tebrikler! Yeni kelimeler hazırlanıyor...
           </div>
         )}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-6">
           {words.map(word => (
             <WordButton
               key={word.id}
@@ -173,6 +171,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
