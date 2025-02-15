@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "tailwindcss/tailwind.css";
 
 const words = [
   "Apple", "Banana", "Cherry", "Grape",
@@ -40,28 +41,29 @@ export default function ConnectionWords() {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1>ConnectionWords</h1>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+    <div className="flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500 text-white p-6">
+      <h1 className="text-4xl font-bold mb-6">ConnectionWords</h1>
+      <div className="grid grid-cols-4 gap-4 bg-white p-4 rounded-lg shadow-lg">
         {words.map((word) => (
           <button
             key={word}
             onClick={() => handleSelect(word)}
-            style={{
-              padding: "10px", 
-              border: "1px solid black", 
-              backgroundColor: selectedWords.includes(word) ? "lightblue" : "white"
-            }}
+            className={`p-4 text-lg font-semibold border rounded-lg transition-all duration-200 ${selectedWords.includes(word) ? "bg-blue-500 text-white" : "bg-gray-100 text-black hover:bg-gray-200"} ${lockedGroups.flat().includes(word) ? "bg-green-500 text-white" : ""}`}
           >
             {word}
           </button>
         ))}
       </div>
-      <button onClick={checkGroup} disabled={selectedWords.length !== 4} style={{ marginTop: "10px", padding: "10px", backgroundColor: "blue", color: "white" }}>
+      <button 
+        onClick={checkGroup} 
+        disabled={selectedWords.length !== 4} 
+        className="mt-6 px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md disabled:opacity-50 transition-all hover:bg-green-600"
+      >
         Kontrol Et
       </button>
-      <p>Hata Sayısı: {mistakes}/4</p>
+      <p className="mt-4 text-lg">Hata Sayısı: {mistakes}/4</p>
     </div>
   );
 }
+
 
