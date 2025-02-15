@@ -9,10 +9,10 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
         <button
           key={level}
           onClick={() => onDifficultyChange(level)}
-          className={`py-2 px-4 rounded-md border ${
+          className={`py-2 px-4 rounded-md ${
             currentDifficulty === level
-              ? "bg-blue-500 text-white"
-              : "bg-[#c8ced6] text-gray-800"
+              ? "bg-[#ff5757] text-white"
+              : "bg-[#ebded4] text-gray-800"
           } transition-all duration-200 ease-in-out`}
         >
           {level}
@@ -23,6 +23,7 @@ const DifficultySelector = ({ currentDifficulty, onDifficultyChange }) => {
 };
 
 export default DifficultySelector;
+
 
 
 
