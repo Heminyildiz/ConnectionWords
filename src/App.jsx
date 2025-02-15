@@ -36,6 +36,9 @@ const App = () => {
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
+  // Günün tarihini YYYY-MM-DD formatında al
+  const today = new Date().toISOString().split('T')[0];
+
   // JSON verisini yükle
   useEffect(() => {
     fetch("/words.json")
@@ -46,7 +49,9 @@ const App = () => {
 
   // Kelime havuzu yüklendiğinde veya mod/difficulty değiştiğinde yeni oyunu başlat
   useEffect(() => {
-    if (allWordPool) startNewGame();
+    if (allWordPool) {
+      startNewGame();
+    }
   }, [allWordPool, difficulty, mode]);
 
   // Oyun oynanırken zaman sayacı (mm:ss formatında)
@@ -63,6 +68,7 @@ const App = () => {
     return `Time: ${minutes}:${seconds}`;
   };
 
+  // Bulmaca üretim fonksiyonu (her iki mod için aynı, ancak Daily modda localStorage kullanıyoruz)
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -84,15 +90,37 @@ const App = () => {
     return shuffleArray(generatedWords);
   }
 
+  // Daily modu için localStorage'dan bugünkü bulmacayı yükle, yoksa üret ve sakla
+  const getDailyPuzzle = () => {
+    const storageKey = `dailyPuzzle_${today}`;
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error("Error parsing daily puzzle from localStorage", error);
+      }
+    }
+    const puzzle = generateGameWords();
+    localStorage.setItem(storageKey, JSON.stringify(puzzle));
+    return puzzle;
+  };
+
   const startNewGame = () => {
-    setWords(generateGameWords());
+    if (mode === "Daily") {
+      // Daily modunda bugünkü bulmaca kullanılır
+      const dailyPuzzle = getDailyPuzzle();
+      setWords(dailyPuzzle);
+    } else {
+      setWords(generateGameWords());
+    }
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
     setTime(0);
   };
 
-  // Kelime butonuna tıklama toggle'ı
+  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -143,13 +171,13 @@ const App = () => {
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
-          {/* Üst çizgi (tek çizgi) */}
+          {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
           {/* Zaman sayacı */}
           <div className="flex justify-end mb-2">
             <span className="text-sm font-bold">{formatTime(time)}</span>
           </div>
-          {/* Kelime grid: her zaman 4 sütun */}
+          {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -161,22 +189,13 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Hata bilgisi / New Game butonu / Daily mod pop-up */}
+          {/* Alt bilgi: Daily modunda, eğer bulmaca çözüldüyse pop-up mesajı göster; aksi halde */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
-                <>
-                  <div className="text-green-600 text-lg font-semibold">Well Done!</div>
-                  <button
-                    onClick={() => {
-                      setMode("Endless");
-                      startNewGame();
-                    }}
-                    className="mt-2 py-2 px-4 rounded-md bg-blue-500 text-white font-bold"
-                  >
-                    New Game
-                  </button>
-                </>
+                <div className="text-green-600 text-lg font-semibold">
+                  You had solved it successfully!
+                </div>
               ) : (
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {errorLimit - errorCount}
@@ -200,4 +219,5 @@ const App = () => {
 };
 
 export default App;
+
 
