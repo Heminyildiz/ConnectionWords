@@ -41,14 +41,16 @@ export default function ConnectionWords() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500 text-white p-6">
-      <h1 className="text-4xl font-bold mb-6">ConnectionWords</h1>
-      <div className="grid grid-cols-4 gap-4 bg-white p-4 rounded-lg shadow-lg">
+    <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-indigo-500 to-blue-600 text-white p-6">
+      <h1 className="text-5xl font-extrabold mb-8 drop-shadow-lg">ConnectionWords</h1>
+      <div className="grid grid-cols-4 gap-4 bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl">
         {words.map((word) => (
           <button
             key={word}
             onClick={() => handleSelect(word)}
-            className={`p-4 text-lg font-semibold border rounded-lg transition-all duration-200 ${selectedWords.includes(word) ? "bg-blue-500 text-white" : "bg-gray-100 text-black hover:bg-gray-200"} ${lockedGroups.flat().includes(word) ? "bg-green-500 text-white" : ""}`}
+            className={`p-5 text-xl font-semibold border rounded-xl transition-all duration-200 text-center shadow-md 
+              ${selectedWords.includes(word) ? "bg-blue-500 text-white scale-105" : "bg-gray-100 text-black hover:bg-gray-200"} 
+              ${lockedGroups.flat().includes(word) ? "bg-green-500 text-white" : ""}`}
           >
             {word}
           </button>
@@ -57,13 +59,14 @@ export default function ConnectionWords() {
       <button 
         onClick={checkGroup} 
         disabled={selectedWords.length !== 4} 
-        className="mt-6 px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md disabled:opacity-50 transition-all hover:bg-green-600"
+        className="mt-8 px-8 py-4 bg-green-600 text-white text-lg font-bold rounded-lg shadow-lg disabled:opacity-50 transition-all hover:bg-green-700"
       >
         Kontrol Et
       </button>
-      <p className="mt-4 text-lg">Hata Sayısı: {mistakes}/4</p>
+      <p className="mt-6 text-xl">Hata Sayısı: <span className="font-bold">{mistakes}/4</span></p>
     </div>
   );
 }
+
 
 
