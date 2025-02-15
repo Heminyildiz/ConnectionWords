@@ -12,15 +12,15 @@ function shuffleArray(array) {
 }
 
 const DIFFICULTY_SETTINGS = {
-  Kolay: 6,
-  Orta: 4,
-  Zor: 2,
+  Easy: 6,
+  Medium: 4,
+  Hard: 2,
 };
 
 const difficultyMap = {
-  Kolay: "easy",
-  Orta: "medium",
-  Zor: "hard"
+  Easy: "easy",
+  Medium: "medium",
+  Hard: "hard"
 };
 
 const App = () => {
@@ -28,12 +28,13 @@ const App = () => {
   const [words, setWords] = useState([]);
   const [selectedWordIds, setSelectedWordIds] = useState([]);
   const [errorCount, setErrorCount] = useState(0);
-  const [difficulty, setDifficulty] = useState("Orta");
+  const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
+  const [time, setTime] = useState(0);
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // Tüm JSON verisini yükle (easy, medium, hard anahtarlarını içeren)
+  // JSON dosyasını yükle
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
@@ -49,6 +50,16 @@ const App = () => {
       startNewGame();
     }
   }, [allWordPool, difficulty]);
+
+  // Oyun oynanırken zaman sayacı
+  useEffect(() => {
+    if (gameStatus === "playing") {
+      const interval = setInterval(() => {
+        setTime(prev => prev + 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [gameStatus]);
 
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
@@ -76,6 +87,7 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
+    setTime(0);
   };
 
   const handleWordClick = (word) => {
@@ -125,7 +137,7 @@ const App = () => {
   if (!allWordPool) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Kelime havuzu yükleniyor...</p>
+        <p>Loading word pool...</p>
       </div>
     );
   }
@@ -136,9 +148,12 @@ const App = () => {
         errorCount={errorCount}
         errorLimit={errorLimit}
         gameStatus={gameStatus}
-        difficulty={difficulty}
       />
-      <div className="p-4 flex flex-col items-center">
+      <div className="p-4 flex flex-col items-center relative">
+        {/* Zaman sayacı: Kelime kutusu grubunun sağ üst köşesinde */}
+        <div className="absolute top-0 right-0 mr-4 mt-2 text-gray-700 text-lg font-bold">
+          {time}s
+        </div>
         {gameStatus === "lost" && (
           <div className="mb-4 text-red-600 text-2xl font-bold">
             Oyun Bitti! Hata limitini aştınız.
@@ -149,7 +164,7 @@ const App = () => {
             Tebrikler! Yeni kelimeler hazırlanıyor...
           </div>
         )}
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-4">
           {words.map(word => (
             <WordButton
               key={word.id}
@@ -171,6 +186,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
