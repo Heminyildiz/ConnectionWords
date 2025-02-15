@@ -15,11 +15,12 @@ module.exports = {
         },
       },
       fontFamily: {
-        // Örneğin Google Fonts'tan eklediğin 'Inter' fontunu kullanabilirsin
+        // Google Fonts'tan eklediğin modern bir font örneği: Inter
         sans: ['Inter', 'ui-sans-serif', 'system-ui']
       }
     },
   },
   plugins: [],
 }
+
 
