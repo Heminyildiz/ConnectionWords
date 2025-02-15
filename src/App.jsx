@@ -56,12 +56,8 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -97,20 +93,16 @@ const App = () => {
   // Tıklama toggle'ı: Eğer zaten seçiliyse geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
-
     if (selectedWordIds.includes(word.id)) {
       setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
       return;
     }
-
     const newSelected = [...selectedWordIds, word.id];
     setSelectedWordIds(newSelected);
-
     if (newSelected.length === 4) {
       const selectedWords = words.filter(w => newSelected.includes(w.id));
       const groupId = selectedWords[0].group;
       const allSameGroup = selectedWords.every(w => w.group === groupId);
-
       if (allSameGroup) {
         const updatedWords = words.map(w =>
           newSelected.includes(w.id) ? { ...w, solved: true } : w
@@ -150,16 +142,16 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#F7F7F7] font-sans animate-fadeIn">
       <Header errorCount={errorCount} errorLimit={errorLimit} gameStatus={gameStatus} />
-      <div className="p-4 flex flex-col items-center">
-        {/* Üst çizgi */}
-        <div className="w-full px-4 max-w-[35rem] mx-auto h-px bg-gray-300 mb-2"></div>
-        {/* Zaman sayacı */}
-        <div className="w-full px-4 max-w-[35rem] mx-auto flex justify-end mb-2">
-          <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
-        </div>
-        {/* Kelime grid container */}
-        <div className="w-full px-4 max-w-[35rem] mx-auto">
-          <div className="grid grid-cols-4 gap-4">
+      <div className="px-4 py-4">
+        <div className="w-full max-w-[35rem] mx-auto">
+          {/* Üst çizgi */}
+          <div className="h-px bg-gray-300 mb-2"></div>
+          {/* Zaman sayacı */}
+          <div className="flex justify-end mb-2">
+            <span className="text-gray-700 text-sm font-bold">{formatTime(time)}</span>
+          </div>
+          {/* Kelime grid: 4 sütun, eşit boşluk */}
+          <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
                 key={word.id}
@@ -169,21 +161,22 @@ const App = () => {
               />
             ))}
           </div>
-        </div>
-        {/* Hata bilgisi veya New Game butonu */}
-        {gameStatus === "lost" ? (
-          <div className="mt-4">
-            <button onClick={startNewGame} className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
-              New Game
-            </button>
+          {/* Hata bilgisi / New Game butonu */}
+          <div className="mt-4 text-center">
+            {gameStatus === "lost" ? (
+              <button onClick={startNewGame} className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
+                New Game
+              </button>
+            ) : (
+              <div className="text-gray-700 text-lg font-semibold">
+                Mistakes remaining: {errorLimit - errorCount}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="mt-4 text-gray-700 text-lg font-semibold">
-            Mistakes remaining: {errorLimit - errorCount}
+          {/* Difficulty Selector */}
+          <div className="mt-6">
+            <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
           </div>
-        )}
-        <div className="mt-6">
-          <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
         </div>
       </div>
     </div>
@@ -191,6 +184,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
