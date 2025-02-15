@@ -1,0 +1,28 @@
+{
+  "wordGroups": [
+    {
+      "groupId": "1",
+      "words": ["mürekkep", "defter", "hikaye", "şiir", "roman", "öykü"]
+    },
+    {
+      "groupId": "2",
+      "words": ["imparatorluk", "devrim", "medeniyet", "krallık", "savaş", "antik"]
+    },
+    {
+      "groupId": "3",
+      "words": ["kuantum", "biyoloji", "astronomi", "fizik", "kimya", "nükleer"]
+    },
+    {
+      "groupId": "4",
+      "words": ["yapay", "zeka", "robotik", "algoritma", "blokzinciri", "siber"]
+    },
+    {
+      "groupId": "5",
+      "words": ["dağ", "nehir", "ova", "göl", "kıyı", "adalar"]
+    },
+    {
+      "groupId": "6",
+      "words": ["senfoni", "opera", "keman", "piyano", "ritim", "melodi"]
+    }
+  ]
+}
