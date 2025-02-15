@@ -1,27 +1,27 @@
 import React from 'react';
 
-const WordButton = ({ word, isCorrect, onClick, disabled }) => {
-  // Buton stilini seçim durumuna göre ayarlıyoruz
-  let baseStyle = "py-3 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out font-medium focus:outline-none";
+const WordButton = ({ word, onClick, isSelected }) => {
+  const baseStyle = "py-3 px-4 rounded-lg shadow transition-all duration-300 ease-in-out cursor-pointer text-lg font-medium";
+  const normalStyle = "bg-white border border-gray-300 hover:bg-gray-100";
+  const selectedStyle = "bg-blue-200 border-blue-400";
+  const solvedStyle = "bg-green-300 border-green-500 cursor-default";
 
-  if (isCorrect === true) {
-    baseStyle += " bg-gradient-to-r from-green-400 to-green-600 text-white";
-  } else if (isCorrect === false) {
-    baseStyle += " bg-gradient-to-r from-red-400 to-red-600 text-white";
+  let style = baseStyle;
+  if (word.solved) {
+    style += " " + solvedStyle;
+  } else if (isSelected) {
+    style += " " + selectedStyle;
   } else {
-    baseStyle += " bg-white text-gray-800 border border-gray-300 hover:shadow-2xl hover:border-transparent";
+    style += " " + normalStyle;
   }
 
   return (
-    <button 
-      onClick={onClick}
-      disabled={disabled}
-      className={baseStyle}
-    >
-      {word}
+    <button onClick={onClick} className={style} disabled={word.solved}>
+      {word.text}
     </button>
   );
 };
 
 export default WordButton;
+
 
