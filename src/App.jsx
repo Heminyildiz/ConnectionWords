@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import WordButton from './WordButton';
-import DifficultySelector from './DifficultySelector';
+import WordButton from './components/WordButton';
+import DifficultySelector from './components/DifficultySelector';
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -45,7 +45,9 @@ const App = () => {
 
   // Kelime havuzu yüklendiğinde veya mod/difficulty değiştiğinde yeni oyunu başlat
   useEffect(() => {
-    if (allWordPool) startNewGame();
+    if (allWordPool) {
+      startNewGame();
+    }
   }, [allWordPool, difficulty, mode]);
 
   // Oyun oynanırken zaman sayacı (mm:ss formatında)
@@ -67,8 +69,6 @@ const App = () => {
   };
 
   function generateGameWords() {
-    // Üzerinde zorluk seçici olmayan Daily modunda, difficulty değerini göz ardı edip belirli bir havuz kullanabilirsiniz.
-    // Burada basitlik açısından, her iki modda da aynı generateGameWords fonksiyonunu kullanıyoruz.
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
     const selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
@@ -168,7 +168,7 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Hata bilgisi veya New Game butonu / Daily modunda Well Done pop-up */}
+          {/* Hata bilgisi / New Game butonu */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -195,10 +195,7 @@ const App = () => {
                   Mistakes remaining: {errorLimit - errorCount}
                 </div>
                 <div className="mt-6">
-                  <DifficultySelector
-                    currentDifficulty={difficulty}
-                    onDifficultyChange={setDifficulty}
-                  />
+                  <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
             )}
@@ -210,6 +207,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
