@@ -7,7 +7,7 @@ const WordButton = ({ word, onClick, isSelected, theme }) => {
   
   let defaultColor;
   if (theme === "dark") {
-    defaultColor = "bg-[#444444]"; // Dark mode için koyu uyumlu renk (tercihe bağlı)
+    defaultColor = "bg-[#444444]";
   } else {
     defaultColor = "bg-[#BFDC80]";
   }
@@ -22,6 +22,7 @@ const WordButton = ({ word, onClick, isSelected, theme }) => {
 };
 
 export default WordButton;
+
 
 
 
