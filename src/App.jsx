@@ -36,7 +36,7 @@ const App = () => {
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // Günün tarihini YYYY-MM-DD formatında al
+  // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
 
   // JSON verisini yükle
@@ -63,12 +63,16 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Bulmaca üretim fonksiyonu (her iki mod için aynı, ancak Daily modda localStorage kullanıyoruz)
+  // Bulmaca üretim fonksiyonu
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -90,7 +94,7 @@ const App = () => {
     return shuffleArray(generatedWords);
   }
 
-  // Daily modu için localStorage'dan bugünkü bulmacayı yükle, yoksa üret ve sakla
+  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -108,7 +112,6 @@ const App = () => {
 
   const startNewGame = () => {
     if (mode === "Daily") {
-      // Daily modunda bugünkü bulmaca kullanılır
       const dailyPuzzle = getDailyPuzzle();
       setWords(dailyPuzzle);
     } else {
@@ -120,7 +123,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
+  // Kelime butonuna tıklama toggle'ı
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -161,7 +164,7 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  // Tema durumuna göre container sınıfı
+  // Tema durumuna göre top-level container sınıfı
   const containerClass = theme === "dark" 
     ? "bg-gray-900 text-white" 
     : "bg-[#F7F7F7] text-gray-800";
@@ -189,7 +192,7 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Alt bilgi: Daily modunda, eğer bulmaca çözüldüyse pop-up mesajı göster; aksi halde */}
+          {/* Alt bilgi: Daily modunda; eğer bulmaca çözüldüyse pop-up, değilse hata bilgisi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -219,5 +222,6 @@ const App = () => {
 };
 
 export default App;
+
 
 
