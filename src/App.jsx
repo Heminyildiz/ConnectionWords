@@ -63,12 +63,8 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -164,7 +160,7 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  // Tema durumuna göre top-level container sınıfı
+  // Tema durumuna göre container sınıfı
   const containerClass = theme === "dark" 
     ? "bg-gray-900 text-white" 
     : "bg-[#F7F7F7] text-gray-800";
@@ -192,7 +188,7 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Alt bilgi: Daily modunda; eğer bulmaca çözüldüyse pop-up, değilse hata bilgisi */}
+          {/* Alt bilgi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -217,11 +213,26 @@ const App = () => {
           </div>
         </div>
       </div>
+      {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında New Game butonu */}
+      {gameStatus === "lost" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Game Over</h2>
+            <button 
+              onClick={startNewGame} 
+              className="py-3 px-8 rounded-md bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold transform hover:scale-105 transition-all duration-300"
+            >
+              New Game
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default App;
+
 
 
 
