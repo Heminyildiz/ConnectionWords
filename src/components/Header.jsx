@@ -8,14 +8,14 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
     setThemeDropdownOpen(false);
   };
 
-  // Dark mod için ortak renk: eğer theme "dark" ise text-gray-400, aksi halde text-gray-800
+  // Dark mode için ortak renk: dark modda text-gray-400, light modda text-gray-800
   const textColorClass = theme === "dark" ? "text-gray-400" : "text-gray-800";
 
   return (
     <header className="py-2 w-full border-b border-gray-300 px-4">
       <div className="max-w-[35rem] mx-auto flex items-center justify-between">
-        {/* Sol taraf: Daily/Endless dropdown */}
-        <div className="flex items-center">
+        {/* Sol taraf: Mode seçimi */}
+        <div className="flex items-center space-x-2">
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value)}
@@ -25,8 +25,10 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
             <option value="Endless">Endless</option>
           </select>
         </div>
-        {/* Orta: (ConnectionWords metni kaldırıldı) */}
-        <div></div>
+        {/* Orta: ConnectionWords metni */}
+        <div>
+          <h1 className={`text-xl font-semibold ${textColorClass} text-center`}>ConnectionWords</h1>
+        </div>
         {/* Sağ taraf: Tema toggling */}
         <div className="relative">
           <button 
@@ -61,6 +63,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
 };
 
 export default Header;
+
 
 
 
