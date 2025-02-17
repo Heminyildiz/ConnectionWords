@@ -3,6 +3,7 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
+// Normal shuffle fonksiyonu
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -11,7 +12,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Basit seeded random fonksiyonu
+// Basit seeded random fonksiyonu: Belirli bir seed kullanarak deterministik random üretir.
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -23,7 +24,7 @@ function seededRandom(seed) {
   };
 }
 
-// Seeded shuffle fonksiyonu
+// Seeded shuffle fonksiyonu: Belirli bir seed'e göre diziyi karıştırır.
 function seededShuffle(array, seed) {
   const random = seededRandom(seed);
   const arr = [...array];
@@ -54,21 +55,14 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
-  const [theme, setTheme] = useState("light"); // "light" or "dark"
-  const [showPrevModal, setShowPrevModal] = useState(false);
-  const [prevSolution, setPrevSolution] = useState(null);
+  // Mod seçenekleri: "Daily", "Challenge", "Zen"
+  const [mode, setMode] = useState("Challenge");
+  const [theme, setTheme] = useState("light");
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
-  
-  // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
+
+  // Günün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
   const today = new Date().toISOString().split('T')[0];
-  // Dünkü tarihi hesaplamak için
-  const getYesterdayDate = () => {
-    const d = new Date();
-    d.setDate(d.getDate() - 1);
-    return d.toISOString().split('T')[0];
-  };
 
   // JSON verisini yükle
   useEffect(() => {
@@ -85,13 +79,13 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacını ayarla (mm:ss formatında)
+  // Zaman sayacı: Zen modunda zaman sayacı görünmeyecek.
   useEffect(() => {
-    if (gameStatus === "playing") {
+    if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
-  }, [gameStatus]);
+  }, [gameStatus, mode]);
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
@@ -157,74 +151,36 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    setTime(0);
+    // Zen modunda zaman sayacı yok, diğer modlarda sıfırlanır.
+    if (mode !== "Zen") {
+      setTime(0);
+    }
   };
 
-  // Daily modunda bulmaca çözüldüyse, çözümü localStorage'a kaydet
+  // Daily modunda bulmaca çözüldüğünde çözümü localStorage'a kaydet
   useEffect(() => {
     if (mode === "Daily" && gameStatus === "won") {
       localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
     }
   }, [gameStatus, mode, today, words]);
 
-  // Previous Day's Answers için
-  const openPreviousSolution = () => {
-    const yesterday = getYesterdayDate();
-    const storageKey = `dailySolution_${yesterday}`;
-    const stored = localStorage.getItem(storageKey);
-    if (stored) {
-      try {
-        setPrevSolution(JSON.parse(stored));
-      } catch (error) {
-        console.error("Error parsing previous solution", error);
-        setPrevSolution(null);
+  // Oyun durumunu güncelleme: Zen modunda hata limiti yok, diğer modlarda kontrol
+  useEffect(() => {
+    if (mode === "Zen") {
+      if (words.length > 0 && words.every(w => w.solved)) {
+        startNewGame();
       }
     } else {
-      setPrevSolution(null);
-    }
-    setShowPrevModal(true);
-  };
-
-  const closePrevModal = () => {
-    setShowPrevModal(false);
-  };
-
-  // Kelime butonuna tıklama toggle'ı
-  const handleWordClick = (word) => {
-    if (gameStatus !== "playing" || word.solved) return;
-    if (selectedWordIds.includes(word.id)) {
-      setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
-      return;
-    }
-    const newSelected = [...selectedWordIds, word.id];
-    setSelectedWordIds(newSelected);
-    if (newSelected.length === 4) {
-      const selectedWords = words.filter(w => newSelected.includes(w.id));
-      const groupId = selectedWords[0].group;
-      const allSameGroup = selectedWords.every(w => w.group === groupId);
-      if (allSameGroup) {
-        const updatedWords = words.map(w =>
-          newSelected.includes(w.id) ? { ...w, solved: true } : w
-        );
-        setWords(updatedWords);
-        setSelectedWordIds([]);
-      } else {
-        setErrorCount(prev => prev + 1);
-        setTimeout(() => setSelectedWordIds([]), 500);
+      if (errorCount >= errorLimit) {
+        setGameStatus("lost");
+      } else if (words.length > 0 && words.every(w => w.solved)) {
+        setGameStatus("won");
       }
     }
-  };
+  }, [errorCount, words, errorLimit, mode]);
 
   useEffect(() => {
-    if (errorCount >= errorLimit) {
-      setGameStatus("lost");
-    } else if (words.length > 0 && words.every(w => w.solved)) {
-      setGameStatus("won");
-    }
-  }, [errorCount, words, errorLimit]);
-
-  useEffect(() => {
-    if (gameStatus === "won" && mode === "Endless") {
+    if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -241,10 +197,12 @@ const App = () => {
         <div className="w-full max-w-[35rem] mx-auto">
           {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
-          {/* Zaman sayacı */}
-          <div className="flex justify-end mb-2">
-            <span className="text-sm font-bold">{formatTime(time)}</span>
-          </div>
+          {/* Zaman sayacı: Zen modunda görünmez */}
+          {mode !== "Zen" && (
+            <div className="flex justify-end mb-2">
+              <span className="text-sm font-bold">{formatTime(time)}</span>
+            </div>
+          )}
           {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
@@ -269,7 +227,7 @@ const App = () => {
                   Mistakes remaining: {errorLimit - errorCount}
                 </div>
               )
-            ) : (
+            ) : mode === "Challenge" ? (
               <>
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {errorLimit - errorCount}
@@ -278,19 +236,12 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
+            ) : ( // Zen modu
+              <div className="text-lg font-semibold">
+                Unlimited Errors Mode
+              </div>
             )}
           </div>
-          {/* Previous Day's Answers Button */}
-          {mode === "Daily" && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={openPreviousSolution}
-                className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold transition-all duration-200 hover:scale-105"
-              >
-                Previous Day's Answers
-              </button>
-            </div>
-          )}
         </div>
       </div>
       {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
@@ -321,32 +272,12 @@ const App = () => {
           </div>
         </div>
       )}
-      {/* Previous Day's Answers Modal */}
-      {showPrevModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-md shadow-lg text-center max-w-[90%]">
-            <h2 className="text-2xl font-bold mb-4">Previous Day's Answers ({getYesterdayDate()})</h2>
-            {prevSolution ? (
-              <div className="grid grid-cols-4 gap-2 md:gap-4">
-                {prevSolution.map(word => (
-                  <div key={word.id} className="w-full aspect-square flex items-center justify-center rounded-lg bg-gray-200 text-xs md:text-base font-bold uppercase overflow-hidden truncate">
-                    {word.text}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-gray-700">No solution available for yesterday.</div>
-            )}
-            <button onClick={closePrevModal} className="mt-4 py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* (Previous Day's Answers Modal kaldırıldı) */}
     </div>
   );
 };
 
 export default App;
+
 
 
