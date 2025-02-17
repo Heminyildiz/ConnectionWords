@@ -218,10 +218,10 @@ const App = () => {
       </div>
       {/* Footer: Privacy Policy ve Email Contact */}
       <footer className="mt-8 text-center">
-        <a href="/privacy.html" className="text-blue-500 underline mr-4">
+        <a href="/privacy.html" className="text-blue-500 mr-4">
           Privacy Policy
         </a>
-        <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
+        <a href="mailto:info@quickwordgames.com" className="text-blue-500 ">
           Email Contact
         </a>
       </footer>
