@@ -25,14 +25,12 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
             <option value="Zen">Zen</option>
           </select>
         </div>
-        {/* Ortada: Başlık */}
-        <div>
-          <h1 className={`text-xl font-semibold ${textColorClass} text-center`}>ConnectionWords</h1>
-        </div>
+        {/* Ortada: (başlık kaldırıldı) */}
         {/* Sağ taraf: Tema toggling */}
         <div className="relative">
           <button onClick={() => setThemeDropdownOpen(!themeDropdownOpen)} className="focus:outline-none">
             {theme === 'light' ? (
+              // Eski Açık Mod (Light Mode) ikonu
               <svg className="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 15a5 5 0 100-10 5 5 0 000 10z"/>
               </svg>
@@ -56,6 +54,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
 };
 
 export default Header;
+
 
 
 
