@@ -12,7 +12,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Seeded random fonksiyonu: belirli bir seed kullanarak deterministik random değer üretir
+// Seeded random fonksiyonu: Belirli bir seed ile deterministik random üretir
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -24,7 +24,7 @@ function seededRandom(seed) {
   };
 }
 
-// Seeded shuffle fonksiyonu: verilen seed'e göre diziyi karıştırır
+// Seeded shuffle: Belirli bir seed'e göre diziyi karıştırır
 function seededShuffle(array, seed) {
   const random = seededRandom(seed);
   const arr = [...array];
@@ -55,12 +55,12 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily" (günlük), "Challenge" (önceden Endless olarak adlandırılan mod) ve "Zen" (hatasız, sonsuz)
+  // Mod seçenekleri: "Daily" (günlük), "Challenge" (eski Endless), "Zen" (sınırsız hata modu)
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light"); // "light" veya "dark"
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
-  
+
   // Bugünün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
   const today = new Date().toISOString().split('T')[0];
 
@@ -79,7 +79,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Oyun oynanırken zaman sayacını güncelle (mm:ss formatında)
+  // Oyun oynanırken zaman sayacını (mm:ss) güncelle
   useEffect(() => {
     if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -88,12 +88,8 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -129,7 +125,7 @@ const App = () => {
     return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
-  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
+  // Daily modunda bugünkü bulmacayı localStorage'dan yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -158,16 +154,38 @@ const App = () => {
     setTime(0);
   };
 
-  // Daily modunda, bulmaca çözüldüğünde çözümü localStorage'a kaydet
-  useEffect(() => {
-    if (mode === "Daily" && gameStatus === "won") {
-      localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
+  // Kelime butonuna tıklama toggle'ı
+  const handleWordClick = (word) => {
+    if (gameStatus !== "playing" || word.solved) return;
+    if (selectedWordIds.includes(word.id)) {
+      setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
+      return;
     }
-  }, [gameStatus, mode, today, words]);
+    const newSelected = [...selectedWordIds, word.id];
+    setSelectedWordIds(newSelected);
+    if (newSelected.length === 4) {
+      const selectedWords = words.filter(w => newSelected.includes(w.id));
+      const groupId = selectedWords[0].group;
+      const allSameGroup = selectedWords.every(w => w.group === groupId);
+      if (allSameGroup) {
+        const updatedWords = words.map(w =>
+          newSelected.includes(w.id) ? { ...w, solved: true } : w
+        );
+        setWords(updatedWords);
+        setSelectedWordIds([]);
+      } else {
+        // Zen modunda hata limiti yok, diğer modlarda artır
+        if (mode !== "Zen") {
+          setErrorCount(prev => prev + 1);
+        }
+        setTimeout(() => setSelectedWordIds([]), 500);
+      }
+    }
+  };
 
-  // Oyun durumunu güncelle: Zen modunda hata limiti yok, diğer modlarda hata kontrolü yapılıyor
   useEffect(() => {
     if (mode === "Zen") {
+      // Zen modunda, tüm kelimeler eşleştiğinde hemen yeni bulmaca ver
       if (words.length > 0 && words.every(w => w.solved)) {
         startNewGame();
       }
@@ -235,7 +253,7 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
-            ) : ( // Zen Mode
+            ) : ( // Zen modu
               <div className="text-lg font-semibold">
                 Unlimited Errors Mode
               </div>
@@ -246,10 +264,10 @@ const App = () => {
       {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
       <footer className="mt-12 text-center text-xs font-normal">
         <div>
-          <a href="/privacy.html" className="text-blue-500 mr-4">
+          <a href="/privacy.html" className="text-blue-500 underline mr-4">
             Privacy Policy
           </a>
-          <a href="mailto:info@quickwordgames.com" className="text-blue-500">
+          <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
             Email Contact
           </a>
         </div>
@@ -276,13 +294,3 @@ const App = () => {
 };
 
 export default App;
-
-
-
-
-
-
-
-
-
-
