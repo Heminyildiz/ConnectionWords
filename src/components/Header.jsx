@@ -21,7 +21,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
             className={`text-lg font-semibold ${textColorClass} bg-transparent outline-none`}
           >
             <option value="Daily">Daily</option>
-            <option value="Endless">Endless</option>
+            <option value="Endless">Challenge</option>
           </select>
         </div>
         {/* Orta: (ConnectionWords metni kaldırıldı) */}
