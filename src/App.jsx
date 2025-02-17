@@ -3,7 +3,6 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
-// Normal shuffle fonksiyonu
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -55,13 +54,13 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily", "Endless" (şu an "Endless" olarak ayarlanmış) 
+  // Mod seçenekleri: "Daily" veya "Endless"
   const [mode, setMode] = useState("Endless");
   const [theme, setTheme] = useState("light"); // "light" veya "dark"
   const [showPrevModal, setShowPrevModal] = useState(false);
   const [prevSolution, setPrevSolution] = useState(null);
 
-  // Daily modunda hata limiti sabit 4 olacak, diğer modlar için DIFFICULTY_SETTINGS kullanılacak.
+  // Daily modunda hata limiti sabit 4 olacak, diğer modlarda DIFFICULTY_SETTINGS kullanılacak.
   const errorLimit = mode === "Daily" ? 4 : DIFFICULTY_SETTINGS[difficulty];
   
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
@@ -88,13 +87,13 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacını ayarla (Zen modunda zaman sayacı görünmeyecek)
+  // Zaman sayacını ayarla (mm:ss formatında)
   useEffect(() => {
-    if (gameStatus === "playing" && mode !== "Zen") {
+    if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
-  }, [gameStatus, mode]);
+  }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
@@ -160,9 +159,7 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    if (mode !== "Zen") {
-      setTime(0);
-    }
+    setTime(0);
   };
 
   // Kelime butonuna tıklama fonksiyonu
@@ -193,11 +190,12 @@ const App = () => {
     }
   };
 
-  // Oyun durumunu güncelleme: Zen modunda hata limiti yok; diğer modlarda kontrol
   useEffect(() => {
-    if (mode === "Zen") {
-      if (words.length > 0 && words.every(w => w.solved)) {
-        startNewGame();
+    if (mode === "Daily") {
+      if (errorCount >= errorLimit) {
+        setGameStatus("lost");
+      } else if (words.length > 0 && words.every(w => w.solved)) {
+        setGameStatus("won");
       }
     } else {
       if (errorCount >= errorLimit) {
@@ -208,7 +206,6 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
-  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
   useEffect(() => {
     if (gameStatus === "won" && mode === "Endless") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -282,12 +279,13 @@ const App = () => {
           </div>
         </div>
       )}
-      {/* Previous Day's Answers Modal (kaldırıldı) */}
+      {/* Previous Day's Answers Modal kaldırıldı */}
     </div>
   );
 };
 
 export default App;
+
 
 
 
