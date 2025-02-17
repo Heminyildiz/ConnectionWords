@@ -3,20 +3,28 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
-// Basit seeded random fonksiyonu: verilen seed (string) üzerinden deterministik random üretir.
+// Basit klasik shuffle fonksiyonu
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Seeded random üretimi için basit fonksiyon (deterministik)
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
   return function() {
-    // Basit lineer kongruens yöntemini kullanıyoruz
     hash = (hash * 9301 + 49297) % 233280;
     return hash / 233280;
   };
 }
 
-// Seeded shuffle: Math.random yerine seededRandom kullanarak karıştırma
+// Seeded shuffle: Belirli bir seed kullanarak diziyi karıştırır
 function seededShuffle(array, seed) {
   const random = seededRandom(seed);
   const arr = [...array];
@@ -53,10 +61,10 @@ const App = () => {
   const [prevSolution, setPrevSolution] = useState(null);
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
-  
+
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
-  
+
   // Dünkü tarihi hesaplamak için:
   const getYesterdayDate = () => {
     const d = new Date();
@@ -94,11 +102,9 @@ const App = () => {
   };
 
   // Bulmaca üretim fonksiyonu
-  // Daily mod için, deterministik olarak üretmek için seed olarak 'today' tarihini kullanıyoruz.
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
-    // Deterministik shuffle: Daily modda seed olarak today tarihini kullan; Endless modda normal Math.random shuffle
     let selectedGroupKeys;
     if (mode === "Daily") {
       selectedGroupKeys = seededShuffle([...groupKeys], today).slice(0, 4);
@@ -124,10 +130,10 @@ const App = () => {
         });
       });
     });
-    return seededShuffle(generatedWords, today); // Daily modda da tüm bulmacayı aynı seed ile karıştır
+    return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
-  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret (deterministik yöntem kullanılıyor)
+  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -156,14 +162,14 @@ const App = () => {
     setTime(0);
   };
 
-  // Oyun çözüldüğünde Daily moddaysa, çözümü localStorage'a kaydet (günün çözümü)
+  // Oyun çözüldüğünde Daily moddaysa, çözümü localStorage'a kaydet
   useEffect(() => {
     if (mode === "Daily" && gameStatus === "won") {
       localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
     }
   }, [gameStatus, mode, today, words]);
 
-  // Previous Day's Answers için buton tıklaması
+  // Previous Day's Answers için
   const openPreviousSolution = () => {
     const yesterday = getYesterdayDate();
     const storageKey = `dailySolution_${yesterday}`;
@@ -289,8 +295,8 @@ const App = () => {
           )}
         </div>
       </div>
-      {/* Footer: Privacy Policy and Email Contact and Disclaimer */}
-      <footer className="mt-8 text-center text-xs font-normal font-lexend">
+      {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
+      <footer className="mt-8 text-center text-xs font-normal">
         <div>
           <a href="/privacy.html" className="text-blue-500 underline mr-4">
             Privacy Policy
@@ -344,6 +350,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
