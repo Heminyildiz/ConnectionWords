@@ -12,7 +12,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Basit seeded random fonksiyonu: Belirli bir seed kullanarak deterministik random üretir.
+// Seeded random fonksiyonu: Belirli bir seed kullanarak deterministik random üretir.
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -55,13 +55,13 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily", "Challenge" ve "Zen"
+  // Mod seçenekleri: "Daily", "Challenge", "Zen"
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light");
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // Bugünün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
+  // Günün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
   const today = new Date().toISOString().split('T')[0];
 
   // JSON verisini yükle
@@ -79,7 +79,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı: Zen modunda zaman sayacı görünmeyecek
+  // Zaman sayacı: Zen modunda görünmeyecek.
   useEffect(() => {
     if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -156,7 +156,7 @@ const App = () => {
     }
   };
 
-  // handleWordClick fonksiyonu: Kelime butonuna tıklama işlemi
+  // Kelime butonuna tıklama fonksiyonu
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -184,7 +184,7 @@ const App = () => {
     }
   };
 
-  // Oyun durumunu güncelle: Zen modunda hata limiti yok, diğer modlarda kontrol
+  // Oyun durumunu güncelle: Zen modunda hata limiti yok; diğer modlarda kontrol
   useEffect(() => {
     if (mode === "Zen") {
       if (words.length > 0 && words.every(w => w.solved)) {
@@ -207,8 +207,8 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  const containerClass = theme === "dark" 
-    ? "bg-gray-900 text-white" 
+  const containerClass = theme === "dark"
+    ? "bg-gray-900 text-white"
     : "bg-[#F7F7F7] text-gray-800";
 
   return (
@@ -234,17 +234,7 @@ const App = () => {
             ))}
           </div>
           <div className="mt-4 text-center">
-            {mode === "Daily" ? (
-              gameStatus === "won" ? (
-                <div className="text-green-600 text-lg font-semibold">
-                  You had solved it successfully!
-                </div>
-              ) : (
-                <div className="text-lg font-semibold">
-                  Mistakes remaining: {errorLimit - errorCount}
-                </div>
-              )
-            ) : mode === "Challenge" ? (
+            {mode === "Challenge" && (
               <>
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {errorLimit - errorCount}
@@ -253,11 +243,8 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
-            ) : ( // Zen modu
-              <div className="text-lg font-semibold">
-                Unlimited Errors Mode
-              </div>
             )}
+            {/* For Daily and Zen modes, no extra info text */}
           </div>
         </div>
       </div>
@@ -278,8 +265,8 @@ const App = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg text-center">
             <h2 className="text-2xl font-bold mb-4">Game Over</h2>
-            <button 
-              onClick={startNewGame} 
+            <button
+              onClick={startNewGame}
               className="py-3 px-8 rounded-md bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold transform hover:scale-105 transition-all duration-300"
             >
               New Game
@@ -292,6 +279,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
