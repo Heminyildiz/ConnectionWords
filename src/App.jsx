@@ -12,7 +12,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Seeded random fonksiyonu: Belirli bir seed kullanarak deterministik random üretir.
+// Basit seeded random fonksiyonu: Belirli bir seed ile deterministik random üretir
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -24,7 +24,7 @@ function seededRandom(seed) {
   };
 }
 
-// Seeded shuffle fonksiyonu: Belirli bir seed'e göre diziyi karıştırır.
+// Seeded shuffle fonksiyonu: Belirli bir seed'e göre diziyi karıştırır
 function seededShuffle(array, seed) {
   const random = seededRandom(seed);
   const arr = [...array];
@@ -55,10 +55,11 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily", "Challenge", "Zen"
+  // Mod seçenekleri: "Daily", "Challenge" ve "Zen"
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light");
 
+  // Sadece Daily ve Challenge modları için hata limiti uygulanıyor.
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
@@ -79,7 +80,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı: Zen modunda görünmeyecek.
+  // Zaman sayacı: Zen modunda gösterilmez.
   useEffect(() => {
     if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -88,8 +89,12 @@ const App = () => {
   }, [gameStatus, mode]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -176,6 +181,7 @@ const App = () => {
         setWords(updatedWords);
         setSelectedWordIds([]);
       } else {
+        // Zen modunda hata limiti yok; diğer modlarda artır.
         if (mode !== "Zen") {
           setErrorCount(prev => prev + 1);
         }
@@ -184,9 +190,10 @@ const App = () => {
     }
   };
 
-  // Oyun durumunu güncelle: Zen modunda hata limiti yok; diğer modlarda kontrol
+  // Oyun durumunu güncelleme
   useEffect(() => {
     if (mode === "Zen") {
+      // Zen modunda hata limiti yok; tüm kelimeler eşleştiğinde hemen yeni oyun.
       if (words.length > 0 && words.every(w => w.solved)) {
         startNewGame();
       }
@@ -199,7 +206,7 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
-  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
+  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç.
   useEffect(() => {
     if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -237,14 +244,13 @@ const App = () => {
             {mode === "Challenge" && (
               <>
                 <div className="text-lg font-semibold">
-                  Mistakes remaining: {errorLimit - errorCount}
+                  Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
                 </div>
                 <div className="mt-6">
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
             )}
-            {/* For Daily and Zen modes, no extra info text */}
           </div>
         </div>
       </div>
@@ -279,6 +285,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
