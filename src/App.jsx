@@ -35,7 +35,7 @@ const App = () => {
   const [theme, setTheme] = useState("light"); // "light" or "dark"
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
-
+  
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
 
@@ -72,7 +72,7 @@ const App = () => {
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Bulmaca üretim fonksiyonu (her mod için aynı)
+  // Bulmaca üretim fonksiyonu
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -173,10 +173,13 @@ const App = () => {
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
+          {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
+          {/* Zaman sayacı */}
           <div className="flex justify-end mb-2">
             <span className="text-sm font-bold">{formatTime(time)}</span>
           </div>
+          {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -188,6 +191,7 @@ const App = () => {
               />
             ))}
           </div>
+          {/* Alt bilgi: Daily modunda pop-up mesajı, Endless modunda difficulty selector ile birlikte hata bilgisi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -212,13 +216,16 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Footer: Privacy Policy */}
+      {/* Footer: Privacy Policy ve Email Contact */}
       <footer className="mt-8 text-center">
-        <a href="/privacy.html" className="text-blue-500 underline">
+        <a href="/privacy.html" className="text-blue-500 underline mr-4">
           Privacy Policy
         </a>
+        <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
+          Email Contact
+        </a>
       </footer>
-      {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında New Game butonu */}
+      {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında çekici "New Game" butonu */}
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg text-center">
@@ -237,6 +244,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
