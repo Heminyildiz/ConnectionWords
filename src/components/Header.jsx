@@ -13,7 +13,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
   return (
     <header className="py-2 w-full border-b border-gray-300 px-4">
       <div className="max-w-[35rem] mx-auto flex items-center justify-between">
-        {/* Sol taraf: Mod seçimi */}
+        {/* Sol tarafta: Mod seçimi */}
         <div className="flex items-center space-x-2">
           <select
             value={mode}
@@ -25,18 +25,20 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
             <option value="Zen">Zen</option>
           </select>
         </div>
-        {/* Ortada: (başlık kaldırıldı) */}
-        {/* Sağ taraf: Tema toggling */}
+        {/* Ortadaki başlık kaldırıldı */}
+        <div></div>
+        {/* Sağ tarafta: Tema toggling */}
         <div className="relative">
           <button onClick={() => setThemeDropdownOpen(!themeDropdownOpen)} className="focus:outline-none">
             {theme === 'light' ? (
-              // Eski Açık Mod (Light Mode) ikonu
-              <svg className="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 15a5 5 0 100-10 5 5 0 000 10z"/>
+              // Açık moda güneş ikonu (Heroicons sun)
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 8a4 4 0 100 8 4 4 0 000-8z" />
               </svg>
             ) : (
-              <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M17.293 13.293A8 8 0 116.707 2.707a8.001 8.001 0 0010.586 10.586z"/>
+              // Koyu mod için ay ikonu
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
               </svg>
             )}
           </button>
@@ -54,6 +56,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
 };
 
 export default Header;
+
 
 
 
