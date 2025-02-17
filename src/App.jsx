@@ -63,12 +63,16 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Bulmaca üretim fonksiyonu
+  // Bulmaca üretim fonksiyonu (her mod için aynı)
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -119,7 +123,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Kelime butonuna tıklama toggle'ı
+  // Kelime butonuna tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -160,7 +164,6 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
-  // Tema durumuna göre container sınıfı
   const containerClass = theme === "dark" 
     ? "bg-gray-900 text-white" 
     : "bg-[#F7F7F7] text-gray-800";
@@ -170,13 +173,10 @@ const App = () => {
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
-          {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
-          {/* Zaman sayacı */}
           <div className="flex justify-end mb-2">
             <span className="text-sm font-bold">{formatTime(time)}</span>
           </div>
-          {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -188,7 +188,6 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Alt bilgi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -213,6 +212,12 @@ const App = () => {
           </div>
         </div>
       </div>
+      {/* Footer: Privacy Policy */}
+      <footer className="mt-8 text-center">
+        <a href="/privacy.html" className="text-blue-500 underline">
+          Privacy Policy
+        </a>
+      </footer>
       {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında New Game butonu */}
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -232,6 +237,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
