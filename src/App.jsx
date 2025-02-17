@@ -3,7 +3,6 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
-// Basit klasik shuffle fonksiyonu
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -12,7 +11,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Seeded random üretimi için basit fonksiyon (deterministik)
+// Basit seeded random fonksiyonu
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -24,7 +23,7 @@ function seededRandom(seed) {
   };
 }
 
-// Seeded shuffle: Belirli bir seed kullanarak diziyi karıştırır
+// Seeded shuffle fonksiyonu
 function seededShuffle(array, seed) {
   const random = seededRandom(seed);
   const arr = [...array];
@@ -61,11 +60,10 @@ const App = () => {
   const [prevSolution, setPrevSolution] = useState(null);
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
-
+  
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
-
-  // Dünkü tarihi hesaplamak için:
+  // Dünkü tarihi hesaplamak için
   const getYesterdayDate = () => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
@@ -87,7 +85,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Oyun oynanırken zaman sayacı (mm:ss formatında)
+  // Zaman sayacını ayarla (mm:ss formatında)
   useEffect(() => {
     if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -162,7 +160,7 @@ const App = () => {
     setTime(0);
   };
 
-  // Oyun çözüldüğünde Daily moddaysa, çözümü localStorage'a kaydet
+  // Daily modunda bulmaca çözüldüyse, çözümü localStorage'a kaydet
   useEffect(() => {
     if (mode === "Daily" && gameStatus === "won") {
       localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
@@ -296,7 +294,7 @@ const App = () => {
         </div>
       </div>
       {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
-      <footer className="mt-8 text-center text-xs font-normal">
+      <footer className="mt-12 text-center text-xs font-normal">
         <div>
           <a href="/privacy.html" className="text-blue-500 underline mr-4">
             Privacy Policy
@@ -350,6 +348,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
