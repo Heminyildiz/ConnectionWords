@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Ana sayfa -->
+  <url>
+    <loc>https://connectionswords.com/</loc>
+    <lastmod>2025-02-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+  </url>
+  <!-- Privacy Policy sayfası -->
+  <url>
+    <loc>https://connectionswords.com/privacy.html</loc>
+    <lastmod>2025-02-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+</urlset>
