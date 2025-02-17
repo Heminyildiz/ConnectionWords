@@ -12,7 +12,7 @@ function shuffleArray(array) {
   return array;
 }
 
-// Seeded random fonksiyonu: Belirli bir seed ile deterministik random üretir
+// Seeded random: Belirli bir seed ile deterministik random üretir
 function seededRandom(seed) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -55,7 +55,7 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily" (günlük), "Challenge" (eski Endless), "Zen" (sınırsız hata modu)
+  // Mod seçenekleri: "Daily", "Challenge" (eski Endless) ve "Zen"
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light"); // "light" veya "dark"
 
@@ -79,7 +79,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Oyun oynanırken zaman sayacını (mm:ss) güncelle
+  // Zaman sayacını (mm:ss) güncelle
   useEffect(() => {
     if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -93,7 +93,7 @@ const App = () => {
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Bulmaca üretim fonksiyonu: Daily modda deterministik üretim için seed kullanılıyor
+  // Bulmaca üretim fonksiyonu: Daily mod için seed kullanılıyor
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -125,7 +125,7 @@ const App = () => {
     return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
-  // Daily modunda bugünkü bulmacayı localStorage'dan yükle veya üret
+  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -183,9 +183,9 @@ const App = () => {
     }
   };
 
+  // Oyun durumunu güncelle: Zen modunda hata limiti yok
   useEffect(() => {
     if (mode === "Zen") {
-      // Zen modunda, tüm kelimeler eşleştiğinde hemen yeni bulmaca ver
       if (words.length > 0 && words.every(w => w.solved)) {
         startNewGame();
       }
@@ -198,6 +198,7 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
+  // Challenge modunda oyun kazanılırsa 2 saniye sonra yeni oyuna geç
   useEffect(() => {
     if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -294,3 +295,4 @@ const App = () => {
 };
 
 export default App;
+
