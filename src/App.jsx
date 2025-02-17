@@ -296,10 +296,10 @@ const App = () => {
       {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
       <footer className="mt-12 text-center text-xs font-normal">
         <div>
-          <a href="/privacy.html" className="text-blue-500 underline mr-4">
+          <a href="/privacy.html" className="text-blue-500 mr-4">
             Privacy Policy
           </a>
-          <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
+          <a href="mailto:info@quickwordgames.com" className="text-blue-500 ">
             Email Contact
           </a>
         </div>
