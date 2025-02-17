@@ -54,18 +54,17 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily" veya "Endless"
-  const [mode, setMode] = useState("Endless");
+  // Mod seçenekleri: "Daily" veya "Challenge"
+  const [mode, setMode] = useState("Endless"); // Şu anki referans dosyada "Endless" kullanılmış; bunu "Challenge" olarak değiştirmek için:
+  // Kullanıcının istediği gibi, Challenge modunun işlevselliğini koruyoruz:
   const [theme, setTheme] = useState("light"); // "light" veya "dark"
-  const [showPrevModal, setShowPrevModal] = useState(false);
-  const [prevSolution, setPrevSolution] = useState(null);
 
-  // Daily modunda hata limiti sabit 4 olacak, diğer modlarda DIFFICULTY_SETTINGS kullanılacak.
+  // Daily modunda hata limiti sabit 4 olacak, diğer modlarda DIFFICULTY_SETTINGS kullanılsın.
   const errorLimit = mode === "Daily" ? 4 : DIFFICULTY_SETTINGS[difficulty];
-  
+
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
-  // Dünkü tarihi hesaplamak için
+  // Dünkü tarihi hesaplamak için (eski özellik; Daily modda artık kullanılmayacak)
   const getYesterdayDate = () => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
@@ -87,7 +86,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacını ayarla (mm:ss formatında)
+  // Zaman sayacını ayarla (mm:ss formatında) – Daily modunda ve Challenge modunda gösterilecek.
   useEffect(() => {
     if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -96,8 +95,12 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (timeInSeconds % 60)
+      .toString()
+      .padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
@@ -182,32 +185,26 @@ const App = () => {
         setWords(updatedWords);
         setSelectedWordIds([]);
       } else {
-        if (mode !== "Zen") {
-          setErrorCount(prev => prev + 1);
-        }
+        // Daily modunda hata limiti sabit 4; Challenge modunda DIFFICULTY_SETTINGS uygulanır.
+        setErrorCount(prev => prev + 1);
         setTimeout(() => setSelectedWordIds([]), 500);
       }
     }
   };
 
+  // Oyun durumunu güncelleme
   useEffect(() => {
-    if (mode === "Daily") {
-      if (errorCount >= errorLimit) {
-        setGameStatus("lost");
-      } else if (words.length > 0 && words.every(w => w.solved)) {
-        setGameStatus("won");
-      }
-    } else {
-      if (errorCount >= errorLimit) {
-        setGameStatus("lost");
-      } else if (words.length > 0 && words.every(w => w.solved)) {
-        setGameStatus("won");
-      }
+    if (errorCount >= errorLimit) {
+      setGameStatus("lost");
+    } else if (words.length > 0 && words.every(w => w.solved)) {
+      setGameStatus("won");
     }
-  }, [errorCount, words, errorLimit, mode]);
+  }, [errorCount, words, errorLimit]);
 
+  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
   useEffect(() => {
     if (gameStatus === "won" && mode === "Endless") {
+      // Eğer mod "Endless" ismi kullanılıyorsa, bunu Challenge olarak değiştireceğiz.
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -223,7 +220,7 @@ const App = () => {
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
-          {mode !== "Zen" && (
+          {mode !== "Daily" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
@@ -250,6 +247,7 @@ const App = () => {
                 </div>
               </>
             )}
+            {/* Daily modunda ekstra bilgi gösterilmiyor */}
           </div>
         </div>
       </div>
@@ -285,6 +283,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
