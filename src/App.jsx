@@ -55,13 +55,13 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily", "Challenge", "Zen"
+  // Mod seçenekleri: "Daily", "Challenge" ve "Zen"
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light");
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
 
-  // Günün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
+  // Bugünün tarihini YYYY-MM-DD formatında al (Daily mod için seed olarak kullanılacak)
   const today = new Date().toISOString().split('T')[0];
 
   // JSON verisini yükle
@@ -79,7 +79,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı: Zen modunda zaman sayacı görünmeyecek.
+  // Zaman sayacı: Zen modunda zaman sayacı görünmeyecek
   useEffect(() => {
     if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -151,20 +151,40 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    // Zen modunda zaman sayacı yok, diğer modlarda sıfırlanır.
     if (mode !== "Zen") {
       setTime(0);
     }
   };
 
-  // Daily modunda bulmaca çözüldüğünde çözümü localStorage'a kaydet
-  useEffect(() => {
-    if (mode === "Daily" && gameStatus === "won") {
-      localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
+  // handleWordClick fonksiyonu: Kelime butonuna tıklama işlemi
+  const handleWordClick = (word) => {
+    if (gameStatus !== "playing" || word.solved) return;
+    if (selectedWordIds.includes(word.id)) {
+      setSelectedWordIds(selectedWordIds.filter(id => id !== word.id));
+      return;
     }
-  }, [gameStatus, mode, today, words]);
+    const newSelected = [...selectedWordIds, word.id];
+    setSelectedWordIds(newSelected);
+    if (newSelected.length === 4) {
+      const selectedWords = words.filter(w => newSelected.includes(w.id));
+      const groupId = selectedWords[0].group;
+      const allSameGroup = selectedWords.every(w => w.group === groupId);
+      if (allSameGroup) {
+        const updatedWords = words.map(w =>
+          newSelected.includes(w.id) ? { ...w, solved: true } : w
+        );
+        setWords(updatedWords);
+        setSelectedWordIds([]);
+      } else {
+        if (mode !== "Zen") {
+          setErrorCount(prev => prev + 1);
+        }
+        setTimeout(() => setSelectedWordIds([]), 500);
+      }
+    }
+  };
 
-  // Oyun durumunu güncelleme: Zen modunda hata limiti yok, diğer modlarda kontrol
+  // Oyun durumunu güncelle: Zen modunda hata limiti yok, diğer modlarda kontrol
   useEffect(() => {
     if (mode === "Zen") {
       if (words.length > 0 && words.every(w => w.solved)) {
@@ -179,6 +199,7 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
+  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
   useEffect(() => {
     if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -195,15 +216,12 @@ const App = () => {
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
-          {/* Üst çizgi */}
           <div className="h-px bg-gray-300 mb-2"></div>
-          {/* Zaman sayacı: Zen modunda görünmez */}
           {mode !== "Zen" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
           )}
-          {/* Kelime grid */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -215,7 +233,6 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Alt bilgi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -244,7 +261,6 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Footer: Privacy Policy, Email Contact, and Disclaimer */}
       <footer className="mt-12 text-center text-xs font-normal">
         <div>
           <a href="/privacy.html" className="text-blue-500 underline mr-4">
@@ -258,7 +274,6 @@ const App = () => {
           Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
         </div>
       </footer>
-      {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında çekici "New Game" butonu */}
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg text-center">
@@ -272,12 +287,12 @@ const App = () => {
           </div>
         </div>
       )}
-      {/* (Previous Day's Answers Modal kaldırıldı) */}
     </div>
   );
 };
 
 export default App;
+
 
 
 
