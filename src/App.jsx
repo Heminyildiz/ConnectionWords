@@ -3,12 +3,28 @@ import Header from './components/Header';
 import WordButton from './components/WordButton';
 import DifficultySelector from './components/DifficultySelector';
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+// Basit seeded random fonksiyonu: verilen seed (string) üzerinden deterministik random üretir.
+function seededRandom(seed) {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return array;
+  return function() {
+    // Basit lineer kongruens yöntemini kullanıyoruz
+    hash = (hash * 9301 + 49297) % 233280;
+    return hash / 233280;
+  };
+}
+
+// Seeded shuffle: Math.random yerine seededRandom kullanarak karıştırma
+function seededShuffle(array, seed) {
+  const random = seededRandom(seed);
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 const DIFFICULTY_SETTINGS = {
@@ -33,11 +49,20 @@ const App = () => {
   const [time, setTime] = useState(0);
   const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
   const [theme, setTheme] = useState("light"); // "light" or "dark"
+  const [showPrevModal, setShowPrevModal] = useState(false);
+  const [prevSolution, setPrevSolution] = useState(null);
 
   const errorLimit = DIFFICULTY_SETTINGS[difficulty];
   
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
+  
+  // Dünkü tarihi hesaplamak için:
+  const getYesterdayDate = () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
+  };
 
   // JSON verisini yükle
   useEffect(() => {
@@ -63,25 +88,33 @@ const App = () => {
   }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-      .toString()
-      .padStart(2, '0');
-    const seconds = (timeInSeconds % 60)
-      .toString()
-      .padStart(2, '0');
+    const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+    const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
   // Bulmaca üretim fonksiyonu
+  // Daily mod için, deterministik olarak üretmek için seed olarak 'today' tarihini kullanıyoruz.
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
-    const selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
+    // Deterministik shuffle: Daily modda seed olarak today tarihini kullan; Endless modda normal Math.random shuffle
+    let selectedGroupKeys;
+    if (mode === "Daily") {
+      selectedGroupKeys = seededShuffle([...groupKeys], today).slice(0, 4);
+    } else {
+      selectedGroupKeys = shuffleArray([...groupKeys]).slice(0, 4);
+    }
     let generatedWords = [];
     let idCounter = 1;
     selectedGroupKeys.forEach((groupId) => {
       const group = pool.find(g => g.groupId === groupId);
-      const wordsForGroup = shuffleArray([...group.words]).slice(0, 4);
+      let wordsForGroup;
+      if (mode === "Daily") {
+        wordsForGroup = seededShuffle([...group.words], today + groupId).slice(0, 4);
+      } else {
+        wordsForGroup = shuffleArray([...group.words]).slice(0, 4);
+      }
       wordsForGroup.forEach((word) => {
         generatedWords.push({
           id: idCounter++,
@@ -91,10 +124,10 @@ const App = () => {
         });
       });
     });
-    return shuffleArray(generatedWords);
+    return seededShuffle(generatedWords, today); // Daily modda da tüm bulmacayı aynı seed ile karıştır
   }
 
-  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
+  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret (deterministik yöntem kullanılıyor)
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -123,7 +156,36 @@ const App = () => {
     setTime(0);
   };
 
-  // Kelime butonuna tıklama toggle'ı: Eğer zaten seçiliyse, seçimi geri al; değilse ekle.
+  // Oyun çözüldüğünde Daily moddaysa, çözümü localStorage'a kaydet (günün çözümü)
+  useEffect(() => {
+    if (mode === "Daily" && gameStatus === "won") {
+      localStorage.setItem(`dailySolution_${today}`, JSON.stringify(words));
+    }
+  }, [gameStatus, mode, today, words]);
+
+  // Previous Day's Answers için buton tıklaması
+  const openPreviousSolution = () => {
+    const yesterday = getYesterdayDate();
+    const storageKey = `dailySolution_${yesterday}`;
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      try {
+        setPrevSolution(JSON.parse(stored));
+      } catch (error) {
+        console.error("Error parsing previous solution", error);
+        setPrevSolution(null);
+      }
+    } else {
+      setPrevSolution(null);
+    }
+    setShowPrevModal(true);
+  };
+
+  const closePrevModal = () => {
+    setShowPrevModal(false);
+  };
+
+  // Kelime butonuna tıklama toggle'ı
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -191,7 +253,7 @@ const App = () => {
               />
             ))}
           </div>
-          {/* Alt bilgi: Daily modunda pop-up mesajı, Endless modunda difficulty selector ile birlikte hata bilgisi */}
+          {/* Alt bilgi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -214,16 +276,32 @@ const App = () => {
               </>
             )}
           </div>
+          {/* Previous Day's Answers Button */}
+          {mode === "Daily" && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={openPreviousSolution}
+                className="py-2 px-4 rounded-md bg-blue-500 text-white font-bold transition-all duration-200 hover:scale-105"
+              >
+                Previous Day's Answers
+              </button>
+            </div>
+          )}
         </div>
       </div>
-      {/* Footer: Privacy Policy ve Email Contact */}
-      <footer className="mt-8 text-center">
-        <a href="/privacy.html" className="text-blue-500 mr-4">
-          Privacy Policy
-        </a>
-        <a href="mailto:info@quickwordgames.com" className="text-blue-500 ">
-          Email Contact
-        </a>
+      {/* Footer: Privacy Policy and Email Contact and Disclaimer */}
+      <footer className="mt-8 text-center text-xs font-normal font-lexend">
+        <div>
+          <a href="/privacy.html" className="text-blue-500 underline mr-4">
+            Privacy Policy
+          </a>
+          <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
+            Email Contact
+          </a>
+        </div>
+        <div className="mt-2 text-gray-500">
+          Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
+        </div>
       </footer>
       {/* Pop-up: Hata limitleri dolduğunda ekranın ortasında çekici "New Game" butonu */}
       {gameStatus === "lost" && (
@@ -239,11 +317,34 @@ const App = () => {
           </div>
         </div>
       )}
+      {/* Previous Day's Answers Modal */}
+      {showPrevModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg text-center max-w-[90%]">
+            <h2 className="text-2xl font-bold mb-4">Previous Day's Answers ({getYesterdayDate()})</h2>
+            {prevSolution ? (
+              <div className="grid grid-cols-4 gap-2 md:gap-4">
+                {prevSolution.map(word => (
+                  <div key={word.id} className="w-full aspect-square flex items-center justify-center rounded-lg bg-gray-200 text-xs md:text-base font-bold uppercase overflow-hidden truncate">
+                    {word.text}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-gray-700">No solution available for yesterday.</div>
+            )}
+            <button onClick={closePrevModal} className="mt-4 py-2 px-4 rounded-md bg-blue-500 text-white font-bold">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default App;
+
 
 
 
