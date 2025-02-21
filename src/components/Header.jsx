@@ -32,9 +32,22 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
           {/* Sağ taraf: Soru işareti ikonu ve Tema toggling */}
           <div className="flex items-center space-x-2">
             <button onClick={() => setShowHowToPlay(true)} className="focus:outline-none">
-              {/* Yeni soru işareti ikonu: Heroicons tarzında outline, 24x24 viewBox */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm.25 15h-1.5v-1.5h1.5V17zm1.42-4.91c-.368.357-.716.745-.716 1.41v.5h-1.5v-.5c0-.96.52-1.59.976-2.05.47-.47.744-.74.744-1.09 0-.64-.52-1.16-1.16-1.16-.64 0-1.16.52-1.16 1.16H9c0-1.15.93-2.08 2.08-2.08 1.15 0 2.08.93 2.08 2.08 0 .536-.213.99-.58 1.36z" />
+              {/* Minimalist Question Mark Icon (Tabler Icons) */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-blue-500"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 18h.01" />
+                <path d="M9 9a3 3 0 1 1 6 0c0 1.5 -1.5 2.25 -2 2.5l-1 .5" />
               </svg>
             </button>
             <div className="relative">
@@ -82,6 +95,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
 };
 
 export default Header;
+
 
 
 
