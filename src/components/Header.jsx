@@ -27,15 +27,19 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
               <option value="Zen">Zen</option>
             </select>
           </div>
-          {/* Ortada: Boş bırakıldı */}
-          <div></div>
+          {/* Ortada: "Connections Words" metni */}
+          <div>
+            <h1 className={`text-lg font-semibold ${textColorClass} text-center`}>
+              Connections Words
+            </h1>
+          </div>
           {/* Sağ taraf: Soru işareti ikonu ve Tema toggling */}
           <div className="flex items-center space-x-2">
             <button onClick={() => setShowHowToPlay(true)} className="focus:outline-none">
-              {/* Yeni soru işareti ikonu: Bir çember içinde "?" */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="10" />
-                <text x="12" y="17" textAnchor="middle" fontSize="12" fill="white" fontFamily="sans-serif">?</text>
+              {/* Heroicons tarzında, outline QuestionMarkCircle ikonu */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9.228a3 3 0 114.243 4.243M12 15h.01" />
               </svg>
             </button>
             <div className="relative">
@@ -83,6 +87,7 @@ const Header = ({ mode, setMode, theme, setTheme }) => {
 };
 
 export default Header;
+
 
 
 
