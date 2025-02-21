@@ -269,7 +269,8 @@ const App = () => {
           </a>
         </div>
         <div className="mt-2 text-gray-500">
-          Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
+          Disclaimer: Connections Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. 
+                      We encourage you to play the daily NYT Connections game on New York Times website.
         </div>
       </footer>
       {gameStatus === "lost" && (
