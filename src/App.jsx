@@ -193,7 +193,7 @@ const App = () => {
   }, [errorCount, words, errorLimit, mode]);
 
   useEffect(() => {
-    if (gameStatus === "won" && mode === "Endless") {
+    if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -236,7 +236,7 @@ const App = () => {
                   Mistakes remaining: {4 - errorCount}
                 </div>
               )
-            ) : (
+            ) : mode === "Challenge" ? (
               <>
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
@@ -245,12 +245,12 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
-      {/* Yeni Bilgi Bölümü */}
-      <div className={`w-full max-w-[35rem] mx-auto mt-8 p-4 rounded ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+      {/* Yeni Bilgi Bölümü: Tam genişlik, belirli bir padding ve margin ile, Lexend fontuyla */}
+      <div className={`w-full py-8 px-4 mt-12 ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"} text-center font-lexend`}>
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
@@ -304,6 +304,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
