@@ -54,21 +54,15 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
-  const [theme, setTheme] = useState("light"); // "light" or "dark"
-  const [showPrevModal, setShowPrevModal] = useState(false);
-  const [prevSolution, setPrevSolution] = useState(null);
+  // Mod seçenekleri: "Daily" veya "Endless"
+  const [mode, setMode] = useState("Endless");
+  const [theme, setTheme] = useState("light"); // "light" veya "dark"
 
-  const errorLimit = DIFFICULTY_SETTINGS[difficulty]; // Daily modunda ayrı hata limiti istenmediği için burada değişiklik yapılmadı.
+  // Daily modunda hata limiti sabit 4 olacak, diğer modlarda DIFFICULTY_SETTINGS kullanılsın.
+  const errorLimit = mode === "Daily" ? 4 : DIFFICULTY_SETTINGS[difficulty];
   
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
-  // Dünkü tarihi hesaplamak için
-  const getYesterdayDate = () => {
-    const d = new Date();
-    d.setDate(d.getDate() - 1);
-    return d.toISOString().split('T')[0];
-  };
 
   // JSON verisini yükle
   useEffect(() => {
@@ -251,7 +245,6 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Yeni Bilgi Bölümü */}
       <div className="mt-8 text-center">
         <h2 className="text-2xl font-bold">Connections Words Game</h2>
         <p className="text-lg">
@@ -285,12 +278,12 @@ const App = () => {
           </div>
         </div>
       )}
-      {/* Previous Day's Answers Modal kaldırıldı */}
     </div>
   );
 };
 
 export default App;
+
 
 
 
