@@ -249,8 +249,8 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Yeni Bilgi Bölümü: Tam genişlik, belirli bir padding ve margin ile, Lexend fontuyla */}
-      <div className={`w-full py-8 px-4 mt-12 ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"} text-center font-lexend`}>
+      {/* Yeni Bilgi Bölümü: Arka plan rengi, tema uyumlu; biraz daha aşağıya alındı */}
+      <div className={`w-full py-8 px-4 mt-12 ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"} text-center font-lexend`}>
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
@@ -261,12 +261,12 @@ const App = () => {
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.<br />
+          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
           You can continue to play after solving or losing the first one.
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Game is a puzzle-based game that requires players to identify groups of items <br />that share a common characteristic or category.
+          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
           <br />
           The aim of the game is to find these connections without making more than four mistakes.<br />
           The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
@@ -304,6 +304,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
