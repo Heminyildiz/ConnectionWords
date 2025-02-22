@@ -260,8 +260,8 @@ const App = () => {
       <div className="w-full max-w-[35rem] mx-auto mt-8 text-center">
         <h2 className="text-2xl font-bold">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
-          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.<br /><br />
-          Improve your vocabulary and have endless fun finding word groups.<br /><br />
+          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.<br />
+          Improve your vocabulary and have endless fun finding word groups.<br />
           Great for all ages!
         </p>
       </div>
