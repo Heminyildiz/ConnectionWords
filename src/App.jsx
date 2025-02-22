@@ -54,13 +54,13 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily" veya "Endless"
-  const [mode, setMode] = useState("Endless");
-  const [theme, setTheme] = useState("light"); // "light" veya "dark"
+  // Mode seçenekleri: "Daily", "Challenge", "Zen"
+  const [mode, setMode] = useState("Challenge");
+  const [theme, setTheme] = useState("light");
 
-  // Daily modunda hata limiti sabit 4 olacak, diğer modlarda DIFFICULTY_SETTINGS kullanılsın.
-  const errorLimit = mode === "Daily" ? 4 : DIFFICULTY_SETTINGS[difficulty];
-  
+  // Hata limiti: Daily modunda sabit 4, Challenge modunda DIFFICULTY_SETTINGS, Zen modunda ise sınırsız
+  const errorLimit = mode === "Daily" ? 4 : mode === "Challenge" ? DIFFICULTY_SETTINGS[difficulty] : Infinity;
+
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
 
@@ -79,13 +79,13 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacını ayarla (mm:ss formatında)
+  // Zaman sayacı: Zen modunda gösterilmez
   useEffect(() => {
-    if (gameStatus === "playing") {
+    if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
-  }, [gameStatus]);
+  }, [gameStatus, mode]);
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
@@ -151,7 +151,9 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    setTime(0);
+    if (mode !== "Zen") {
+      setTime(0);
+    }
   };
 
   // Kelime butonuna tıklama fonksiyonu
@@ -174,22 +176,32 @@ const App = () => {
         setWords(updatedWords);
         setSelectedWordIds([]);
       } else {
-        setErrorCount(prev => prev + 1);
+        // Zen modunda hata limiti yok, diğer modlarda hata sayısı artar.
+        if (mode !== "Zen") {
+          setErrorCount(prev => prev + 1);
+        }
         setTimeout(() => setSelectedWordIds([]), 500);
       }
     }
   };
 
   useEffect(() => {
-    if (errorCount >= errorLimit) {
-      setGameStatus("lost");
-    } else if (words.length > 0 && words.every(w => w.solved)) {
-      setGameStatus("won");
+    if (mode === "Zen") {
+      // Zen modunda hata limiti yok; tüm kelimeler eşleştiğinde hemen yeni oyuna geç.
+      if (words.length > 0 && words.every(w => w.solved)) {
+        startNewGame();
+      }
+    } else {
+      if (errorCount >= errorLimit) {
+        setGameStatus("lost");
+      } else if (words.length > 0 && words.every(w => w.solved)) {
+        setGameStatus("won");
+      }
     }
-  }, [errorCount, words, errorLimit]);
+  }, [errorCount, words, errorLimit, mode]);
 
   useEffect(() => {
-    if (gameStatus === "won" && mode === "Endless") {
+    if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -205,7 +217,7 @@ const App = () => {
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
-          {mode !== "Daily" && (
+          {mode !== "Zen" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
@@ -222,17 +234,7 @@ const App = () => {
             ))}
           </div>
           <div className="mt-4 text-center">
-            {mode === "Daily" ? (
-              gameStatus === "won" ? (
-                <div className="text-green-600 text-lg font-semibold">
-                  You had solved it successfully!
-                </div>
-              ) : (
-                <div className="text-lg font-semibold">
-                  Mistakes remaining: {errorLimit - errorCount}
-                </div>
-              )
-            ) : (
+            {mode === "Challenge" ? (
               <>
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
@@ -241,7 +243,17 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
-            )}
+            ) : mode === "Daily" ? (
+              gameStatus === "won" ? (
+                <div className="text-green-600 text-lg font-semibold">
+                  You had solved it successfully!
+                </div>
+              ) : (
+                <div className="text-lg font-semibold">
+                  Mistakes remaining: {4 - errorCount}
+                </div>
+              )
+            ) : null}
           </div>
         </div>
       </div>
@@ -283,6 +295,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
