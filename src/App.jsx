@@ -254,23 +254,20 @@ const App = () => {
       <div className="w-full py-8 px-4 mt-40 text-center font-lexend bg-transparent">
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
-          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
-          <br />
-          Improve your vocabulary and have endless fun finding word groups.
-          <br />
-          Great for all ages!
+          Play Connections Words – a never-ending, upgraded version of the well-known NYT Connections Game, similar to Wordle.<br />
+          Expand your vocabulary while enjoying endless fun by discovering word groups.<br />
+          Perfect for players of all ages!
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Words is an unlimited game version of the new daily popular NYT Connections Game. <br />
-          You can continue to play after solving or losing the first one.
+          Connections Words offers an unlimited gameplay experience, inspired by the popular NYT Connections Game.<br />
+          Unlike the original, you can keep playing even after winning or losing your first round.
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
-          <br />
-          The aim of the game is to find these connections without making more than four mistakes.<br />
-          The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
+          In Connections Game, players must recognize and categorize words that share a common trait or theme.<br />
+          The goal is to correctly identify these connections while avoiding more than four errors.<br />
+          Categories can range from simple themes like fish or fire-related terms to more challenging and unexpected word groups.
         </p>
       </div>
       <footer className="mt-12 text-center text-xs font-normal">
@@ -283,8 +280,7 @@ const App = () => {
           </a>
         </div>
         <div className="mt-2 text-gray-500">
-          Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
-        </div>
+          Notice: Connections Words is an independent game and has no association with The New York Times Company. It has not been endorsed, sponsored, or approved by them in any way. We encourage you to try the daily NYT Connections game on the New York Times website.
       </footer>
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
