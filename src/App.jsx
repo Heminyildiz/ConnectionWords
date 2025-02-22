@@ -281,6 +281,7 @@ const App = () => {
         </div>
         <div className="mt-2 text-gray-500">
           Notice: Connections Words is an independent game and has no association with The New York Times Company. It has not been endorsed, sponsored, or approved by them in any way. We encourage you to try the daily NYT Connections game on the New York Times website.
+        </div>
       </footer>
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
