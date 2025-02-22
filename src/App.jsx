@@ -251,7 +251,7 @@ const App = () => {
         </div>
       </div>
       {/* Yeni Bilgi Bölümü: Arka planı oyunun arka planıyla aynı, mt-16 */}
-      <div className="w-full py-8 px-4 mt-36 text-center font-lexend bg-transparent">
+      <div className="w-full py-8 px-4 mt-40 text-center font-lexend bg-transparent">
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
