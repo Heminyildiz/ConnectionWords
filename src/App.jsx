@@ -254,21 +254,21 @@ const App = () => {
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
-          <br /><br />
+          <br />
           Improve your vocabulary and have endless fun finding word groups.
-          <br /><br />
+          <br />
           Great for all ages!
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
+          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.<br />
           You can continue to play after solving or losing the first one.
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
+          Connections Game is a puzzle-based game that requires players to identify groups of items <br />that share a common characteristic or category.
           <br /><br />
-          The aim of the game is to find these connections without making more than four mistakes.
+          The aim of the game is to find these connections without making more than four mistakes.<br />
           The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
         </p>
       </div>
