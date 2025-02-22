@@ -267,7 +267,7 @@ const App = () => {
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
           Connections Game is a puzzle-based game that requires players to identify groups of items <br />that share a common characteristic or category.
-          <br /><br />
+          <br />
           The aim of the game is to find these connections without making more than four mistakes.<br />
           The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
         </p>
