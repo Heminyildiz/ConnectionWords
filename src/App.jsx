@@ -77,8 +77,9 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
+  // Zaman sayacı yalnızca Challenge modunda gösterilsin
   useEffect(() => {
-    if (gameStatus === "playing" && mode !== "Zen") {
+    if (gameStatus === "playing" && mode === "Challenge") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
@@ -146,7 +147,7 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    if (mode !== "Zen") {
+    if (mode === "Challenge") {
       setTime(0);
     }
   };
@@ -209,7 +210,7 @@ const App = () => {
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
-          {mode !== "Daily" && (
+          {mode === "Challenge" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
@@ -249,8 +250,8 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Yeni Bilgi Bölümü: Arka plan rengi, tema uyumlu; biraz daha aşağıya alındı */}
-      <div className={`w-full py-8 px-4 mt-12 ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"} text-center font-lexend`}>
+      {/* Yeni Bilgi Bölümü: Arka planı oyunun arka planıyla aynı, mt-16 */}
+      <div className="w-full py-8 px-4 mt-16 text-center font-lexend bg-transparent">
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
@@ -261,7 +262,7 @@ const App = () => {
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
+          Connections Words is an unlimited game version of the new daily popular NYT Connections Game. <br />
           You can continue to play after solving or losing the first one.
         </p>
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
@@ -304,6 +305,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
