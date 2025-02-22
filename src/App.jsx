@@ -64,7 +64,6 @@ const App = () => {
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
 
-  // JSON verisini yükle
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
@@ -72,14 +71,12 @@ const App = () => {
       .catch(err => console.error("Error loading JSON:", err));
   }, []);
 
-  // Kelime havuzu yüklendiğinde veya mod/difficulty değiştiğinde yeni oyunu başlat
   useEffect(() => {
     if (allWordPool) {
       startNewGame();
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı: Zen modunda gösterilmez
   useEffect(() => {
     if (gameStatus === "playing" && mode !== "Zen") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -93,7 +90,6 @@ const App = () => {
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Bulmaca üretim fonksiyonu
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -125,7 +121,6 @@ const App = () => {
     return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
-  // Daily modunda, bugünkü bulmacayı localStorage'dan yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -156,7 +151,6 @@ const App = () => {
     }
   };
 
-  // Kelime butonuna tıklama fonksiyonu
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -176,8 +170,7 @@ const App = () => {
         setWords(updatedWords);
         setSelectedWordIds([]);
       } else {
-        // Zen modunda hata limiti yok, diğer modlarda hata sayısı artar.
-        if (mode !== "Zen") {
+        if (mode !== "Daily") {
           setErrorCount(prev => prev + 1);
         }
         setTimeout(() => setSelectedWordIds([]), 500);
@@ -187,7 +180,6 @@ const App = () => {
 
   useEffect(() => {
     if (mode === "Zen") {
-      // Zen modunda hata limiti yok; tüm kelimeler eşleştiğinde hemen yeni oyuna geç.
       if (words.length > 0 && words.every(w => w.solved)) {
         startNewGame();
       }
@@ -201,7 +193,7 @@ const App = () => {
   }, [errorCount, words, errorLimit, mode]);
 
   useEffect(() => {
-    if (gameStatus === "won" && mode === "Challenge") {
+    if (gameStatus === "won" && mode === "Endless") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -217,7 +209,7 @@ const App = () => {
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
-          {mode !== "Zen" && (
+          {mode !== "Daily" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
@@ -234,16 +226,7 @@ const App = () => {
             ))}
           </div>
           <div className="mt-4 text-center">
-            {mode === "Challenge" ? (
-              <>
-                <div className="text-lg font-semibold">
-                  Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
-                </div>
-                <div className="mt-6">
-                  <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
-                </div>
-              </>
-            ) : mode === "Daily" ? (
+            {mode === "Daily" ? (
               gameStatus === "won" ? (
                 <div className="text-green-600 text-lg font-semibold">
                   You had solved it successfully!
@@ -253,16 +236,40 @@ const App = () => {
                   Mistakes remaining: {4 - errorCount}
                 </div>
               )
-            ) : null}
+            ) : (
+              <>
+                <div className="text-lg font-semibold">
+                  Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
+                </div>
+                <div className="mt-6">
+                  <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
-      <div className="w-full max-w-[35rem] mx-auto mt-8 text-center">
-        <h2 className="text-2xl font-bold">Connections Words Game</h2>
+      {/* Yeni Bilgi Bölümü */}
+      <div className={`w-full max-w-[35rem] mx-auto mt-8 p-4 rounded ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}>
+        <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
-          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.<br />
-          Improve your vocabulary and have endless fun finding word groups.<br />
+          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
+          <br /><br />
+          Improve your vocabulary and have endless fun finding word groups.
+          <br /><br />
           Great for all ages!
+        </p>
+        <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
+        <p className="text-lg leading-relaxed">
+          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
+          You can continue to play after solving or losing the first one.
+        </p>
+        <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
+        <p className="text-lg leading-relaxed">
+          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
+          <br /><br />
+          The aim of the game is to find these connections without making more than four mistakes.
+          The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
         </p>
       </div>
       <footer className="mt-12 text-center text-xs font-normal">
@@ -291,11 +298,13 @@ const App = () => {
           </div>
         </div>
       )}
+      {/* Previous Day's Answers Modal kaldırıldı */}
     </div>
   );
 };
 
 export default App;
+
 
 
 
