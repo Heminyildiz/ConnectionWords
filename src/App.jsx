@@ -54,16 +54,21 @@ const App = () => {
   const [difficulty, setDifficulty] = useState("Medium");
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "won", "lost"
   const [time, setTime] = useState(0);
-  // Mod seçenekleri: "Daily", "Challenge", "Zen"
-  const [mode, setMode] = useState("Challenge");
-  const [theme, setTheme] = useState("light");
-  
-  // Daily modunda hata limiti sabit 4, diğer modlarda DIFFICULTY_SETTINGS kullanılsın.
-  const errorLimit = mode === "Daily" ? 4 : DIFFICULTY_SETTINGS[difficulty];
+  const [mode, setMode] = useState("Endless"); // "Daily" or "Endless"
+  const [theme, setTheme] = useState("light"); // "light" or "dark"
+  const [showPrevModal, setShowPrevModal] = useState(false);
+  const [prevSolution, setPrevSolution] = useState(null);
+
+  const errorLimit = DIFFICULTY_SETTINGS[difficulty]; // Daily modunda ayrı hata limiti istenmediği için burada değişiklik yapılmadı.
   
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
-  // (Geçmiş özellik: getYesterdayDate kaldırıldı)
+  // Dünkü tarihi hesaplamak için
+  const getYesterdayDate = () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
+  };
 
   // JSON verisini yükle
   useEffect(() => {
@@ -80,13 +85,13 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacını ayarla: Sadece Challenge modunda gösterilsin
+  // Zaman sayacını ayarla (mm:ss formatında)
   useEffect(() => {
-    if (gameStatus === "playing" && mode === "Challenge") {
+    if (gameStatus === "playing") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
       return () => clearInterval(interval);
     }
-  }, [gameStatus, mode]);
+  }, [gameStatus]);
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
@@ -152,9 +157,7 @@ const App = () => {
     setSelectedWordIds([]);
     setErrorCount(0);
     setGameStatus("playing");
-    if (mode === "Challenge") {
-      setTime(0);
-    }
+    setTime(0);
   };
 
   // Kelime butonuna tıklama fonksiyonu
@@ -177,33 +180,22 @@ const App = () => {
         setWords(updatedWords);
         setSelectedWordIds([]);
       } else {
-        if (mode !== "Zen") {
-          setErrorCount(prev => prev + 1);
-        }
+        setErrorCount(prev => prev + 1);
         setTimeout(() => setSelectedWordIds([]), 500);
       }
     }
   };
 
-  // Oyun durumunu güncelleme
   useEffect(() => {
-    if (mode === "Zen") {
-      // Zen modunda, hata limiti yok; tüm kelimeler eşleştiğinde hemen yeni oyun başlat.
-      if (words.length > 0 && words.every(w => w.solved)) {
-        startNewGame();
-      }
-    } else {
-      if (errorCount >= errorLimit) {
-        setGameStatus("lost");
-      } else if (words.length > 0 && words.every(w => w.solved)) {
-        setGameStatus("won");
-      }
+    if (errorCount >= errorLimit) {
+      setGameStatus("lost");
+    } else if (words.length > 0 && words.every(w => w.solved)) {
+      setGameStatus("won");
     }
-  }, [errorCount, words, errorLimit, mode]);
+  }, [errorCount, words, errorLimit]);
 
-  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç.
   useEffect(() => {
-    if (gameStatus === "won" && mode === "Challenge") {
+    if (gameStatus === "won" && mode === "Endless") {
       const timer = setTimeout(() => startNewGame(), 2000);
       return () => clearTimeout(timer);
     }
@@ -219,7 +211,7 @@ const App = () => {
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
-          {mode === "Challenge" && (
+          {mode !== "Daily" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
@@ -246,7 +238,7 @@ const App = () => {
                   Mistakes remaining: {errorLimit - errorCount}
                 </div>
               )
-            ) : mode === "Challenge" ? (
+            ) : (
               <>
                 <div className="text-lg font-semibold">
                   Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
@@ -255,9 +247,17 @@ const App = () => {
                   <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
                 </div>
               </>
-            ) : null}
+            )}
           </div>
         </div>
+      </div>
+      {/* Yeni Bilgi Bölümü */}
+      <div className="mt-8 text-center">
+        <h2 className="text-2xl font-bold">Connections Words Game</h2>
+        <p className="text-lg">
+          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
+          Improve your vocabulary and have endless fun finding word groups. Great for all ages!
+        </p>
       </div>
       <footer className="mt-12 text-center text-xs font-normal">
         <div>
@@ -269,8 +269,7 @@ const App = () => {
           </a>
         </div>
         <div className="mt-2 text-gray-500">
-          Disclaimer: Connections Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. 
-                      We encourage you to play the daily NYT Connections game on New York Times website.
+          Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
         </div>
       </footer>
       {gameStatus === "lost" && (
@@ -292,6 +291,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
