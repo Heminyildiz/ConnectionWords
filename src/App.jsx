@@ -311,7 +311,7 @@ const App = () => {
         </div>
 
         {/* 4) How to Play */}
-        <div className="w-full max-w-[35rem] mx-auto text-center mt-40">
+        <div className="w-full max-w-[35rem] mx-auto text-center mt-4">
           <h3 className="text-xl font-bold mb-2">How to Play</h3>
           <img
             src="/ConnectionsWords.png"
