@@ -334,13 +334,16 @@ const App = () => {
         </div>
       </div>
 
-      <footer className="mt-12 text-center text-xs font-normal">
+         <footer className="mt-12 text-center text-xs font-normal">
         <div>
           <a href="/privacy.html" className="text-blue-500 underline mr-4">
             Privacy Policy
           </a>
-          <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline">
+          <a href="mailto:info@quickwordgames.com" className="text-blue-500 underline mr-4">
             Email Contact
+          </a>
+          <a href="/word-of-the-day.html" className="text-blue-500 underline">
+            Word of the Day
           </a>
         </div>
         <div className="mt-2 text-gray-500">
