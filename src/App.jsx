@@ -77,7 +77,7 @@ const App = () => {
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı yalnızca Challenge modunda gösterilsin
+  // Zaman sayacı yalnızca Challenge modunda
   useEffect(() => {
     if (gameStatus === "playing" && mode === "Challenge") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -91,6 +91,7 @@ const App = () => {
     return `Time: ${minutes}:${seconds}`;
   };
 
+  // Kelime gruplarını oluşturma
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -122,6 +123,7 @@ const App = () => {
     return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
+  // Daily modunda localStorage'a kaydedilmiş bulmacayı kullanma
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -179,12 +181,15 @@ const App = () => {
     }
   };
 
+  // Oyun durumunu kontrol etme
   useEffect(() => {
     if (mode === "Zen") {
+      // Zen modunda tüm kelimeler eşleştiğinde yeni oyuna geç
       if (words.length > 0 && words.every(w => w.solved)) {
         startNewGame();
       }
     } else {
+      // Daily veya Challenge modunda hata limiti vs.
       if (errorCount >= errorLimit) {
         setGameStatus("lost");
       } else if (words.length > 0 && words.every(w => w.solved)) {
@@ -193,6 +198,7 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
+  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
   useEffect(() => {
     if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -251,7 +257,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* Yeni Bilgi Bölümü: Tam genişlik, margin-top: 16rem, arka plan oyunun arka planıyla aynı, Lexend font */}
+      {/* Yeni Bilgi Bölümü */}
       <div className={`w-full mt-40 py-8 px-4 text-center font-lexend ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"}`}>
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
@@ -270,7 +276,8 @@ const App = () => {
 
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
+          Connections Game is a puzzle-based game that requires players to identify groups of items
+          that share a common characteristic or category.
           <br /><br />
           The aim of the game is to find these connections without making more than four mistakes.
           The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
@@ -281,8 +288,8 @@ const App = () => {
         <div className="w-full max-w-[35rem] mx-auto text-center">
           {/* Görsel - boyut ve alt metin */}
           <img
-            src="/Connections Words.png"
-            alt="Screenshot of Connections Words game interface with 16 word squares, difficulty buttons, time, and mistakes info"
+            src="/ConnectionsWords.png"
+            alt="Connections Words game screenshot: 16 word squares, difficulty buttons, time, and mistakes info"
             className="mx-auto"
           />
           <p className="text-lg leading-relaxed mt-4">
@@ -305,6 +312,7 @@ const App = () => {
           Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
         </div>
       </footer>
+
       {gameStatus === "lost" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg text-center">
@@ -323,6 +331,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
