@@ -260,31 +260,28 @@ const App = () => {
       {/* Yeni Bilgi Bölümü */}
       <div className={`w-full mt-40 py-8 px-4 text-center font-lexend ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"}`}>
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
-        <p className="text-lg leading-relaxed">
+        <p className="text-lg leading-relaxed mt-4">
           Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
-          <br /><br />
           Improve your vocabulary and have endless fun finding word groups.
-          <br /><br />
           Great for all ages!
         </p>
 
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
-        <p className="text-lg leading-relaxed">
+        <p className="text-lg leading-relaxed mt-4">
           Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
           You can continue to play after solving or losing the first one.
         </p>
 
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
-        <p className="text-lg leading-relaxed">
+        <p className="text-lg leading-relaxed mt-4">
           Connections Game is a puzzle-based game that requires players to identify groups of items
           that share a common characteristic or category.
-          <br /><br />
           The aim of the game is to find these connections without making more than four mistakes.
           The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
         </p>
 
         {/* How to Play heading and screenshot */}
-        <h3 className="text-xl font-bold mt-40 mb-2">How to Play</h3>
+        <h3 className="text-xl font-bold mt-4 mb-2">How to Play</h3>
         <div className="w-full max-w-[35rem] mx-auto text-center">
           {/* Görsel - boyut ve alt metin */}
           <img
@@ -295,6 +292,10 @@ const App = () => {
           <p className="text-lg leading-relaxed mt-4">
             To play the game, select words that belong together to form a valid group. Click on a word to select it, and once four words are selected,
             if they all match, they lock in as a correct answer. Try to complete all groups with as few mistakes as possible.
+            There are three modes in the game: Daily, Challenge, and Zen.
+            Daily mode refreshes every day and you have 4 chances for mistakes.
+            Challenge mode offers 3 different difficulty settings and different mistake allowances. This mode is designed for players who want to tackle challenges!
+            Zen mode is an endless mode. In this mode, there is no mistake limit, offering a great opportunity to dive into endless fun.
           </p>
         </div>
       </div>
