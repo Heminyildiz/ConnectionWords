@@ -58,12 +58,13 @@ const App = () => {
   const [mode, setMode] = useState("Challenge");
   const [theme, setTheme] = useState("light");
 
-  // Hata limiti: Daily modunda sabit 4, Challenge modunda DIFFICULTY_SETTINGS, Zen modunda ise sınırsız
+  // Daily: hata limiti 4, Challenge: DIFFICULTY_SETTINGS, Zen: sınırsız
   const errorLimit = mode === "Daily" ? 4 : mode === "Challenge" ? DIFFICULTY_SETTINGS[difficulty] : Infinity;
 
   // Günün tarihini YYYY-MM-DD formatında al (Daily mod için)
   const today = new Date().toISOString().split('T')[0];
 
+  // words.json verisini yükle
   useEffect(() => {
     fetch("/words.json")
       .then(response => response.json())
@@ -71,13 +72,14 @@ const App = () => {
       .catch(err => console.error("Error loading JSON:", err));
   }, []);
 
+  // Kelime havuzu yüklenince veya mod/difficulty değişince yeni oyun başlat
   useEffect(() => {
     if (allWordPool) {
       startNewGame();
     }
   }, [allWordPool, difficulty, mode]);
 
-  // Zaman sayacı yalnızca Challenge modunda
+  // Zaman sayacı sadece Challenge modunda
   useEffect(() => {
     if (gameStatus === "playing" && mode === "Challenge") {
       const interval = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -85,13 +87,14 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
+  // Zamanı mm:ss formatına dönüştür
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
     const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
     return `Time: ${minutes}:${seconds}`;
   };
 
-  // Kelime gruplarını oluşturma
+  // Oyun için kelimeleri üretme
   function generateGameWords() {
     const pool = allWordPool[difficultyMap[difficulty]];
     const groupKeys = pool.map(group => group.groupId);
@@ -123,7 +126,7 @@ const App = () => {
     return mode === "Daily" ? seededShuffle(generatedWords, today) : shuffleArray(generatedWords);
   }
 
-  // Daily modunda localStorage'a kaydedilmiş bulmacayı kullanma
+  // Daily modunda localStorage'dan bulmaca yükle veya üret
   const getDailyPuzzle = () => {
     const storageKey = `dailyPuzzle_${today}`;
     const stored = localStorage.getItem(storageKey);
@@ -154,6 +157,7 @@ const App = () => {
     }
   };
 
+  // Kelime butonuna tıklama
   const handleWordClick = (word) => {
     if (gameStatus !== "playing" || word.solved) return;
     if (selectedWordIds.includes(word.id)) {
@@ -189,7 +193,7 @@ const App = () => {
         startNewGame();
       }
     } else {
-      // Daily veya Challenge modunda hata limiti vs.
+      // Daily veya Challenge modunda hata limiti
       if (errorCount >= errorLimit) {
         setGameStatus("lost");
       } else if (words.length > 0 && words.every(w => w.solved)) {
@@ -198,7 +202,7 @@ const App = () => {
     }
   }, [errorCount, words, errorLimit, mode]);
 
-  // Challenge modunda kazanıldığında 2 saniye sonra yeni oyuna geç
+  // Challenge modunda kazanılırsa 2 saniye sonra yeni oyun
   useEffect(() => {
     if (gameStatus === "won" && mode === "Challenge") {
       const timer = setTimeout(() => startNewGame(), 2000);
@@ -206,21 +210,29 @@ const App = () => {
     }
   }, [gameStatus, mode]);
 
+  // Tema rengi
   const containerClass = theme === "dark"
     ? "bg-gray-900 text-white"
     : "bg-[#F7F7F7] text-gray-800";
 
   return (
     <div className={`${containerClass} min-h-screen font-sans animate-fadeIn`}>
+      {/* Header */}
       <Header mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} />
+
+      {/* Oyun Alanı */}
       <div className="px-4 py-4">
         <div className="w-full max-w-[35rem] mx-auto">
           <div className="h-px bg-gray-300 mb-2"></div>
+
+          {/* Time sadece Challenge modunda */}
           {mode === "Challenge" && (
             <div className="flex justify-end mb-2">
               <span className="text-sm font-bold">{formatTime(time)}</span>
             </div>
           )}
+
+          {/* Kelime ızgarası */}
           <div className="grid grid-cols-4 gap-2 md:gap-4">
             {words.map(word => (
               <WordButton
@@ -232,6 +244,8 @@ const App = () => {
               />
             ))}
           </div>
+
+          {/* Oyun alt bilgisi */}
           <div className="mt-4 text-center">
             {mode === "Daily" ? (
               gameStatus === "won" ? (
@@ -249,7 +263,10 @@ const App = () => {
                   Mistakes remaining: {DIFFICULTY_SETTINGS[difficulty] - errorCount}
                 </div>
                 <div className="mt-6">
-                  <DifficultySelector currentDifficulty={difficulty} onDifficultyChange={setDifficulty} />
+                  <DifficultySelector
+                    currentDifficulty={difficulty}
+                    onDifficultyChange={setDifficulty}
+                  />
                 </div>
               </>
             ) : null}
@@ -258,44 +275,61 @@ const App = () => {
       </div>
 
       {/* Yeni Bilgi Bölümü */}
-      <div className={`w-full mt-40 py-8 px-4 text-center font-lexend ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"}`}>
-        <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
-        <p className="text-lg leading-relaxed mt-4">
-          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
-          Improve your vocabulary and have endless fun finding word groups.
-          Great for all ages!
-        </p>
-
-        <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
-        <p className="text-lg leading-relaxed mt-4">
-          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
-          You can continue to play after solving or losing the first one.
-        </p>
-
-        <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
-        <p className="text-lg leading-relaxed mt-4">
-          Connections Game is a puzzle-based game that requires players to identify groups of items
-          that share a common characteristic or category.
-          The aim of the game is to find these connections without making more than four mistakes.
-          The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
-        </p>
-
-        {/* How to Play heading and screenshot */}
-        <h3 className="text-xl font-bold mt-4 mb-2">How to Play</h3>
+      <div className={`w-full mt-40 py-8 px-4 text-center font-lexend bg-transparent`}>
+        {/* 1) Connections Words Game */}
         <div className="w-full max-w-[35rem] mx-auto text-center">
-          {/* Görsel - boyut ve alt metin */}
+          <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
+          <p className="text-lg leading-relaxed">
+            Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
+            <br />
+            Improve your vocabulary and have endless fun finding word groups.
+            <br />
+            Great for all ages!
+          </p>
+        </div>
+
+        {/* 2) What is Connections Words? */}
+        <div className="w-full max-w-[35rem] mx-auto text-center mt-8">
+          <h3 className="text-xl font-bold mb-2">What is Connections Words?</h3>
+          <p className="text-lg leading-relaxed">
+            Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
+            You can continue to play after solving or losing the first one.
+          </p>
+        </div>
+
+        {/* 3) What is Connections Game? */}
+        <div className="w-full max-w-[35rem] mx-auto text-center mt-8">
+          <h3 className="text-xl font-bold mb-2">What is Connections Game?</h3>
+          <p className="text-lg leading-relaxed">
+            Connections Game is a puzzle-based game that requires players to identify groups of items
+            that share a common characteristic or category.
+            <br />
+            The aim of the game is to find these connections without making more than four mistakes.
+            The groups might be related to certain themes such as fish, fire-related terms, etc.,
+            and they can be as straightforward or tricky.
+          </p>
+        </div>
+
+        {/* 4) How to Play */}
+        <div className="w-full max-w-[35rem] mx-auto text-center mt-40">
+          <h3 className="text-xl font-bold mb-2">How to Play</h3>
           <img
             src="/ConnectionsWords.png"
             alt="Connections Words game screenshot: 16 word squares, difficulty buttons, time, and mistakes info"
             className="mx-auto"
           />
           <p className="text-lg leading-relaxed mt-4">
-            To play the game, select words that belong together to form a valid group. Click on a word to select it, and once four words are selected,
-            if they all match, they lock in as a correct answer. Try to complete all groups with as few mistakes as possible.
-            There are three modes in the game: Daily, Challenge, and Zen.
-            Daily mode refreshes every day and you have 4 chances for mistakes.
-            Challenge mode offers 3 different difficulty settings and different mistake allowances. This mode is designed for players who want to tackle challenges!
-            Zen mode is an endless mode. In this mode, there is no mistake limit, offering a great opportunity to dive into endless fun.
+            To play the game, select words that belong together to form a valid group. Click on a word to select it,
+            and once four words are selected, if they all match, they lock in as a correct answer. Try to complete all
+            groups with as few mistakes as possible.
+          </p>
+
+          {/* Ek metin: 3 mod */}
+          <p className="text-lg leading-relaxed mt-4">
+            There are three modes in the game: <br />
+            <strong>Daily</strong> mode refreshes every day and you have 4 chances for mistakes. <br />
+            <strong>Challenge</strong> mode offers 3 different difficulty settings and different mistake allowances. This mode is designed for players who want to tackle challenges! <br />
+            <strong>Zen</strong> mode is an endless mode. In this mode, there is no mistake limit, offering a great opportunity to dive into endless fun.
           </p>
         </div>
       </div>
@@ -332,6 +366,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
