@@ -315,7 +315,7 @@ const App = () => {
           <h3 className="text-xl font-bold mb-2">How to Play</h3>
           <img
             src="/ConnectionsWords.png"
-            alt="Connections Words game screenshot: 16 word squares, difficulty buttons, time, and mistakes info"
+            alt="It shows how the Connections game is played and show difficulty buttons, time, and mistakes info"
             className="mx-auto"
           />
           <p className="text-lg leading-relaxed mt-4">
