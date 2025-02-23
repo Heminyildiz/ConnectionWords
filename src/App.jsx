@@ -250,26 +250,48 @@ const App = () => {
           </div>
         </div>
       </div>
-      {/* Yeni Bilgi Bölümü: Arka planı oyunun arka planıyla aynı, mt-16 */}
-      <div className="w-full py-8 px-4 mt-40 text-center font-lexend bg-transparent">
+
+      {/* Yeni Bilgi Bölümü: Tam genişlik, margin-top: 16rem, arka plan oyunun arka planıyla aynı, Lexend font */}
+      <div className={`w-full mt-40 py-8 px-4 text-center font-lexend ${theme === "dark" ? "bg-gray-900" : "bg-[#F7F7F7]"}`}>
         <h2 className="text-2xl font-bold mb-2">Connections Words Game</h2>
         <p className="text-lg leading-relaxed">
-          Play Connections Words – a never-ending, upgraded version of the well-known NYT Connections Game, similar to Wordle.<br />
-          Expand your vocabulary while enjoying endless fun by discovering word groups.<br />
-          Perfect for players of all ages!
+          Play Connections Words Game - an enhanced, Wordle-like and never-ending version of the popular NYT Connections Game.
+          <br /><br />
+          Improve your vocabulary and have endless fun finding word groups.
+          <br /><br />
+          Great for all ages!
         </p>
+
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Words?</h3>
         <p className="text-lg leading-relaxed">
-          Connections Words offers an unlimited gameplay experience, inspired by the popular NYT Connections Game.<br />
-          Unlike the original, you can keep playing even after winning or losing your first round.
+          Connections Words is an unlimited game version of the new daily popular NYT Connections Game.
+          You can continue to play after solving or losing the first one.
         </p>
+
         <h3 className="text-xl font-bold mt-4 mb-2">What is Connections Game?</h3>
         <p className="text-lg leading-relaxed">
-          In Connections Game, players must recognize and categorize words that share a common trait or theme.<br />
-          The goal is to correctly identify these connections while avoiding more than four errors.<br />
-          Categories can range from simple themes like fish or fire-related terms to more challenging and unexpected word groups.
+          Connections Game is a puzzle-based game that requires players to identify groups of items that share a common characteristic or category.
+          <br /><br />
+          The aim of the game is to find these connections without making more than four mistakes.
+          The groups might be related to certain themes such as fish, fire-related terms, etc., and they can be as straightforward or tricky.
         </p>
+
+        {/* How to Play heading and screenshot */}
+        <h3 className="text-xl font-bold mt-40 mb-2">How to Play</h3>
+        <div className="w-full max-w-[35rem] mx-auto text-center">
+          {/* Görsel - boyut ve alt metin */}
+          <img
+            src="/Connections Words.png"
+            alt="Screenshot of Connections Words game interface with 16 word squares, difficulty buttons, time, and mistakes info"
+            className="mx-auto"
+          />
+          <p className="text-lg leading-relaxed mt-4">
+            To play the game, select words that belong together to form a valid group. Click on a word to select it, and once four words are selected,
+            if they all match, they lock in as a correct answer. Try to complete all groups with as few mistakes as possible.
+          </p>
+        </div>
       </div>
+
       <footer className="mt-12 text-center text-xs font-normal">
         <div>
           <a href="/privacy.html" className="text-blue-500 underline mr-4">
@@ -280,7 +302,7 @@ const App = () => {
           </a>
         </div>
         <div className="mt-2 text-gray-500">
-          Notice: Connections Words is an independent game and has no association with The New York Times Company. It has not been endorsed, sponsored, or approved by them in any way. We encourage you to try the daily NYT Connections game on the New York Times website.
+          Disclaimer: Words is an independent product and is not affiliated with, nor has it been authorized, sponsored, or otherwise approved by The New York Times Company. We encourage you to play the daily NYT Connections game on New York Times website.
         </div>
       </footer>
       {gameStatus === "lost" && (
@@ -296,12 +318,12 @@ const App = () => {
           </div>
         </div>
       )}
-      {/* Previous Day's Answers Modal kaldırıldı */}
     </div>
   );
 };
 
 export default App;
+
 
 
 
